@@ -28,11 +28,21 @@ fin:Robot(x2,y2)
 
 * clean-office(0)
 
-| Tables   |      Are      |  Cool |
-|----------|:-------------:|------:|
-| col 1 is |  left-aligned | $1600 |
-| col 2 is |    centered   |   $12 |
-| col 3 is | right-aligned |    $1 |
+| Operator        |      Precondition      |  Add           | Delete           |
+|-----------------|:----------------------:|---------------:|-----------------:|
+| Clean(O)        | R.O, O.dirty, O.empty  | O.clean        | O.dirty          |
+| Move(Oi, Oj)    | R.Oi, Oj.adj.Oi        | R.Oj           | R.Oi             |
+| Push(b, Oi, Oj) | R.Oi, B.Oi, Oj.adj.Oi  | B.Oj R.Oj E.Oi | E.Oj, B.Oi, R.Oi |
+
+### predicates:
+
+* Robot-location(office):
+* Box-location(box, office)
+* Dirty(office)
+* Clean(office)
+* Empty(office)
+* Adjacent(office, office)
+
 
 #### deliverable:
 
