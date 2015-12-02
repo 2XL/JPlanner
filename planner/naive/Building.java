@@ -16,7 +16,7 @@ public class Building {
     int matrix_dim; // = 3;
     HashMap<String, Box> boxes;
     HashMap<String, Office> offices; // replication of the office indexing
-    Office building[][];
+    Office building[][]; // for the adjacent list
     public Map<String, List<String>> configuration = new HashMap<String, List<String>>();
 
     public Building(Building another) {
@@ -61,7 +61,7 @@ public class Building {
                     currentKey = key_value[0];
                     this.configuration.put(currentKey, new ArrayList<String>());
                     line = key_value[1];
-                    System.out.println(">>>> <<<<<Key: " + currentKey);
+                    System.out.println("\n <<<<<Key: " + currentKey +" >>>>> ");
                 } else {
                     // there is no = in the string.
                     line = line;
@@ -96,7 +96,7 @@ public class Building {
         for (String box : this.configuration.get("Boxes")) {
             this.boxes.put(box, new Box(box));
         }
-        System.out.println(this.boxes.toString());
+        // System.out.println(this.boxes.toString());
 
     }
 
@@ -106,7 +106,7 @@ public class Building {
             for (int column = 0; column < this.matrix_dim; column++) {
 
                 Office office = this.building[row][column];
-                System.out.println("[" + office.row + "]:[" + office.column + "]");
+                // System.out.println("[" + office.row + "]:[" + office.column + "]");
 
                 try {
                     if (this.building[row + 1][column] != null) {
@@ -140,7 +140,7 @@ public class Building {
 
     private void setupOffices() {        // setup the Offices
         this.matrix_dim = (int) Math.sqrt(this.configuration.get("Offices").size());
-        System.out.println("Matrix Dimension:" + this.matrix_dim);
+        System.out.println("\n Matrix Dimension:" + this.matrix_dim);
         this.building = new Office[matrix_dim][matrix_dim];
         // invoice offices
         int officeIndex = 0;
@@ -166,7 +166,7 @@ public class Building {
             for (Office item : office) {
                 String name = this.configuration.get("Offices").get(officeIndex++); // linked list of office names
                 item.name = name;
-                System.out.println("[" + item.column + "]:[" + item.row + "]: " + name);
+                // System.out.println("\n[" + item.column + "]:[" + item.row + "]: " + name);
                 this.offices.put(name, item); // logical pointer...
             }
         }
@@ -204,26 +204,28 @@ public class Building {
             if (match.find()) {
                 // System.out.println(match.group(1));
                 String[] methodArgs = (match.group(1)).split(",");
-                for (String args : methodArgs)
-                    System.out.println(args);
-                System.out.println();
+                // for (String args : methodArgs)
+                   // System.out.println(args);
+                // System.out.println();
                 try {
                     Method todo;
-                    System.out.println("Print: "+methodNameNormal+" ");
+                    System.out.println("::: Print: "+op+" ");
                     switch (methodArgs.length) {
-                        case '1':
-
+                        case 1:
                             System.out.println(methodArgs.length+" 1");
                             todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class);
                             todo.invoke(this, methodArgs[0]);
                             break;
-                        case '2':
+                        case 2:
                             System.out.println(methodArgs.length+" 2");
                             todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class, String.class);
                             todo.invoke(this, methodArgs[0], methodArgs[1]);
                             break;
+                        default:
+                            System.out.println("not match");
+                            break;
                     }
-                    System.out.println("Print: "+methodNameNormal+ " DONE");
+                    // System.out.println("Print: "+methodNameNormal+ " DONE");
 
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
@@ -269,12 +271,10 @@ public class Building {
      * @param o
      */
     public void Robot_location(String o) {
-        /*
+        System.out.println("Robot_location");
+
         Office office = this.offices.get(o); // retrieve the office
-        this.robot.column = office.column;
-        this.robot.row = office.row;
         office.hasRobot = true;
-        */
         this.robot.setOffice(o);
     }
 
@@ -286,27 +286,34 @@ public class Building {
      */
     public void Box_location(String b, String o) {
 
+        System.out.println("Box_location");
         Office office = this.offices.get(o);
         Box box = this.boxes.get(b);
 
         // move the box to a certain office
-        office.addBox(box.name, box);
+        office.addBox(b, box);
 
 
     }
 
     public boolean Dirty(String o) {
+
+        System.out.println("Dirty");
         Office office = this.offices.get(o); // make the office dirty
         return office.setDirty();
     }
 
 
     public boolean Clean(String o) {
+
+        System.out.println("Clean");
         Office office = this.offices.get(o); // make the office clean
         return office.setClean();
     }
 
     public boolean Empty(String o) {
+
+        System.out.println("Empty");
         // an office has empty box stacks
         Office office = this.offices.get(o);
         return office.deleteAllBox();
@@ -317,7 +324,7 @@ public class Building {
 
     public void prettyPrint(){
 
-        System.out.format("%1s-%1s :%-5s : %10s : %10s : %10s\n", "Row", "Column", "Name", "Boxes", "isDirty", "hasRobot");
+        System.out.format("%1$10s:%2$10s:%3$10s:%4$10s:%5$10s:%6$10s\n", "Row", "Column", "Name", "Boxes", "isDirty", "hasRobot");
         for(Office[] offices : this.building){
             for(Office office : offices){
                 office.prettyPrint();

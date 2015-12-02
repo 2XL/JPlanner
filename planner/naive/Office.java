@@ -22,7 +22,7 @@ public class Office {
     }
 
     public boolean addBox(String key, Box box) {
-        if (this.boxes.containsKey(key)) {
+        if (!this.boxes.containsKey(key)) {
             this.boxes.put(key, box);
             return true;
         } else {
@@ -78,8 +78,7 @@ public class Office {
     }
 
     public void addAjacentOffice(String key, Office office) {
-
-        System.out.println(this.name + " Add: " + key);
+        // System.out.print(this.name + " Add: " + key);
         this.adjacent_offices.put(key, office);
     }
 
@@ -116,7 +115,7 @@ public class Office {
     public void prettyPrint() {
 
         // System.out.format("%1s-%1s :%-5s : %10s : %10s : %10s\n", this.row, this.column, this.name, this.boxes.size(), this.isDirty, this.hasRobot);
-        System.out.format("%2d - %1d     :%1s    :%7s     :    %s   :    %s\n", this.row, this.column, this.name, this.boxes.size(), this.isDirty, this.hasRobot);
+        System.out.format("%1$10s:%2$10s:%3$10s:%4$10s:%5$10s:%6$10s\n", this.row, this.column, this.name, this.boxes.size(), this.isDirty, this.hasRobot);
 
     }
 }

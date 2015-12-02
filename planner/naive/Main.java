@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
    
    
-    	String config_file_name = System.getProperty("user.dir")+"/src/naive.config/input.txt";
+    	String config_file_name = System.getProperty("user.dir")+"/src/config/input.txt";
         System.out.println("Working Directory = " + config_file_name);
     	// String config_file_name = "/home/x/Code/JPlaner/src/naive.config.planner/input.txt";
     	
@@ -20,7 +20,6 @@ public class Main {
 
 
 		Planner planner = new Planner(building);
-
 		List<String> result = planner.resolve();
 
 

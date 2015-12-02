@@ -12,9 +12,13 @@ public class Planner {
     Building mazeFin;
 
     public Planner(Building building){
-        this.mazeIni = new Building(building);
-        this.mazeFin = new Building(building);
-        this.maze = new Building(building);
+        this.mazeIni = new Building(building); // initial state
+        this.mazeFin = new Building(building); // final state
+        this.maze = new Building(building); // todo state
+        System.out.println(this.maze);
+        System.out.println(this.mazeIni);
+        System.out.println(this.mazeFin);
+
     }
 
 
@@ -25,12 +29,12 @@ public class Planner {
 
 
         this.maze.prettyPrint();
-        this.mazeIni.applyState(0);
+        this.maze.applyState(0);
+        this.maze.prettyPrint();
+        // this.mazeIni.prettyPrint();
+        // this.mazeFin.applyState(1);
 
-        this.mazeIni.prettyPrint();
-        this.mazeFin.applyState(1);
-
-        this.mazeFin.prettyPrint();
+        // this.mazeFin.prettyPrint();
         // the current is this.maze and has to be converted into final
 
 
