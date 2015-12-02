@@ -1,6 +1,6 @@
 package demo.tree;
 
-import operator.Operator;
+import demo.operator.Operator;
 
 /**
  * This class represents a node in the tree

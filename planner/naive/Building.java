@@ -14,8 +14,8 @@ public class Building {
     // start the N x Y points
     Robot robot; // the dealer
     int matrix_dim; // = 3;
-    Map<String, Box> boxes;
-    Map<String, Office> offices; // replication of the office indexing
+    HashMap<String, Box> boxes;
+    HashMap<String, Office> offices; // replication of the office indexing
     Office building[][];
     public Map<String, List<String>> configuration = new HashMap<String, List<String>>();
 
@@ -30,7 +30,6 @@ public class Building {
     }
 
     public Building(String config) {
-        this.robot = new Robot(-1, -1); // initial state out of the map
         // set office name!!!
         try {
             this.loadConfigHashMap(config);
@@ -41,6 +40,7 @@ public class Building {
         this.setupOffices();
         this.setupOfficeNames();
         this.setupAdjacentBox();
+        this.setupRobot();
     }
 
     private void loadConfigHashMap(String config_file_name) throws IOException {
@@ -155,6 +155,10 @@ public class Building {
 
     }
 
+    private void setupRobot(){
+        this.robot = new Robot(this.offices); // initial state out of the map
+    }
+
     private void setupOfficeNames() {
         int officeIndex = 0;
         this.offices = new HashMap<String, Office>();
@@ -265,13 +269,13 @@ public class Building {
      * @param o
      */
     public void Robot_location(String o) {
-
-
+        /*
         Office office = this.offices.get(o); // retrieve the office
         this.robot.column = office.column;
         this.robot.row = office.row;
-
         office.hasRobot = true;
+        */
+        this.robot.setOffice(o);
     }
 
     /**
@@ -286,10 +290,6 @@ public class Building {
         Box box = this.boxes.get(b);
 
         // move the box to a certain office
-
-        box.column = office.column;
-        box.row = office.row;
-
         office.addBox(box.name, box);
 
 
@@ -311,6 +311,9 @@ public class Building {
         Office office = this.offices.get(o);
         return office.deleteAllBox();
     }
+
+
+
 
     public void prettyPrint(){
 

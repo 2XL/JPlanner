@@ -7,7 +7,7 @@ public class Office {
     public String name;
     public int column;
     public int row;
-    private boolean isDirty;
+    public boolean isDirty;
     public boolean hasRobot;
     public Map<String, Box> boxes;
     private Map<String, Office> adjacent_offices;
@@ -55,6 +55,26 @@ public class Office {
 
     public boolean isEmptyBox() {
         return this.boxes.size() == 0;
+    }
+
+    public boolean isAdjacent(String office){
+        return (this.adjacent_offices.containsKey(office));
+    }
+
+    public Office getOffice(String office){
+        return this.adjacent_offices.get(office);
+    }
+
+    /**
+     *
+     * @param box
+     * @param office
+     * @return
+     */
+    public boolean moveBox(String box, String office){
+        (this.adjacent_offices.get(office)).addBox(box, this.boxes.remove(box));
+        // i dont have the box and the target has it
+        return (!this.boxes.containsKey(box) && this.adjacent_offices.get(office).boxes.containsKey(box));
     }
 
     public void addAjacentOffice(String key, Office office) {

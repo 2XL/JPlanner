@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import predicate.Predicate;
+import demo.predicate.Predicate;
 
 /**
  * This class represents an state with its predicates

@@ -3,10 +3,10 @@ package demo.operator;
 
 import java.util.HashSet;
 
-import predicate.EmptyHand;
-import predicate.Holding;
-import predicate.OnTable;
-import predicate.Predicate;
+import demo.predicate.EmptyHand;
+import demo.predicate.Holding;
+import demo.predicate.OnTable;
+import demo.predicate.Predicate;
 
 public class PutDown extends Operator {
 

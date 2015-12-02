@@ -2,7 +2,7 @@ package demo.operator;
 
 import java.util.HashSet;
 
-import predicate.Predicate;
+import demo.predicate.Predicate;
 
 /**
  * Abstract class that defines an Operator

@@ -16,15 +16,15 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-import operator.Operator;
-import operator.PickUp;
-import operator.PutDown;
-import operator.Stack;
-import operator.Unstack;
-import predicate.On;
-import predicate.Predicate;
-import tree.Node;
-import tree.State;
+import demo.operator.Operator;
+import demo.operator.PickUp;
+import demo.operator.PutDown;
+import demo.operator.Stack;
+import demo.operator.Unstack;
+import demo.predicate.On;
+import demo.predicate.Predicate;
+import demo.tree.Node;
+import demo.tree.State;
 
 public class Main {
 	private static int S;

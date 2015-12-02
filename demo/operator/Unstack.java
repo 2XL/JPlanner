@@ -3,11 +3,11 @@ package demo.operator;
 
 import java.util.HashSet;
 
-import predicate.Clear;
-import predicate.EmptyHand;
-import predicate.Holding;
-import predicate.On;
-import predicate.Predicate;
+import demo.predicate.Clear;
+import demo.predicate.EmptyHand;
+import demo.predicate.Holding;
+import demo.predicate.On;
+import demo.predicate.Predicate;
 
 public class Unstack extends Operator{
 

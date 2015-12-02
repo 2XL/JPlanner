@@ -5,15 +5,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-import predicate.Clear;
-import predicate.EmptyHand;
-import predicate.Holding;
-import predicate.On;
-import predicate.OnTable;
-import predicate.Predicate;
-import predicate.Size;
-import tree.Node;
-import tree.State;
+import demo.predicate.Clear;
+import demo.predicate.EmptyHand;
+import demo.predicate.Holding;
+import demo.predicate.On;
+import demo.predicate.OnTable;
+import demo.predicate.Predicate;
+import demo.predicate.Size;
+import demo.tree.Node;
+import demo.tree.State;
 
 /**
  * This class is used in order to read and load a file
