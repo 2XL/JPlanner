@@ -1,4 +1,4 @@
-package planner;
+package planner.naive;
 
 /**
  * Created by x on 1/12/15.

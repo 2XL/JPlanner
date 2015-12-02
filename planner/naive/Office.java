@@ -1,4 +1,4 @@
-package planner;
+package planner.naive;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +17,7 @@ public class Office {
         this.column = column;
         this.row = row;
         this.adjacent_offices = new HashMap<String, Office>();
+        this.boxes = new HashMap<String, Box>();
 
     }
 
@@ -68,6 +69,7 @@ public class Office {
      * @return
      */
     public boolean setDirty() {
+        System.out.print("setDirty");
         if (this.isDirty != true) {
             this.isDirty = true;
             return true;
@@ -82,12 +84,19 @@ public class Office {
      * @return
      */
     public boolean setClean() {
+        System.out.print("setClean");
         if (this.isDirty != false) {
             this.isDirty = false;
             return true;
         } else {
             return false;
         }
+    }
+
+    public void prettyPrint() {
+
+        // System.out.format("%1s-%1s :%-5s : %10s : %10s : %10s\n", this.row, this.column, this.name, this.boxes.size(), this.isDirty, this.hasRobot);
+        System.out.format("%2d - %1d     :%1s    :%7s     :    %s   :    %s\n", this.row, this.column, this.name, this.boxes.size(), this.isDirty, this.hasRobot);
 
     }
 }

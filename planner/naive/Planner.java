@@ -1,4 +1,4 @@
-package planner;
+package planner.naive;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +23,14 @@ public class Planner {
         result = new ArrayList<String>();
 
 
+
+        this.maze.prettyPrint();
         this.mazeIni.applyState(0);
+
+        this.mazeIni.prettyPrint();
         this.mazeFin.applyState(1);
 
+        this.mazeFin.prettyPrint();
         // the current is this.maze and has to be converted into final
 
 

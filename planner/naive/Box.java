@@ -1,4 +1,4 @@
-package planner;
+package planner.naive;
 
 public class Box {
     String name;
