@@ -50,5 +50,18 @@ fin:Robot(x2,y2)
 2. xx.bat files [README]
 3. documentation.pdf
 
+## Documentation:
 
+
+Introduction to the problem
+
+Analysis of the problem
+
+Planning
+
+Implementation design
+
+Testing cases and results & Analysis of the results
+
+Instructions to execute the program
 
