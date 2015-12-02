@@ -12,7 +12,7 @@ public class Robot {
         this.offices = office;
     }
 
-    public void setOffice(String o){
+    protected void setOffice(String o){
         this.office = this.offices.get(o);
     }
 
@@ -21,7 +21,7 @@ public class Robot {
      * @param office
      * @return
      */
-    public boolean Clean_office(String office){
+    public  boolean Clean_office(String office){
 
         // check the precondition
         if(this.office.name != office)
