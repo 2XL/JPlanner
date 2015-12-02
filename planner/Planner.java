@@ -22,6 +22,7 @@ public class Planner {
         List<String> result; // ordered list of the steps performed to obtain the final result
         result = new ArrayList<String>();
 
+
         this.mazeIni.applyState(0);
         this.mazeFin.applyState(1);
 

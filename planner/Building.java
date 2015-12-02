@@ -1,9 +1,13 @@
 package planner;
 
+import com.sun.xml.internal.fastinfoset.util.StringArray;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Building {
 
@@ -26,7 +30,6 @@ public class Building {
 	}
 
 	public Building(String config) {
-
 		this.robot = new Robot(-1, -1); // initial state out of the map
 		// set office name!!!
 		try {
@@ -34,12 +37,10 @@ public class Building {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		this.setupBoxes();
 		this.setupOffices();
 		this.setupOfficeNames();
 		this.setupAdjacentBox();
-
 	}
 
 	private void loadConfigHashMap(String config_file_name) throws IOException {
@@ -152,9 +153,9 @@ public class Building {
 	}
 	private void setupOfficeNames(){
 		int officeIndex = 0;
+		this.offices = new HashMap<String, Office>();
 		for (Office[] office : this.building) {
 			for (Office item : office) {
-
 				String name = this.configuration.get("Offices").get(officeIndex++); // linked list of office names
 				item.name = name;
 				System.out.println("[" + item.column + "]:[" + item.row + "]: "+name);
@@ -169,6 +170,7 @@ public class Building {
 	 * @param state
 	 */
 	public void applyState(int state){
+
 		String toApply = "";
 		if(state == 0){
 			toApply = "InitialState";
@@ -176,10 +178,21 @@ public class Building {
 			toApply = "GoalState";
 		}
 
+		System.out.println("\napplyState: "+toApply);
 		List<String> ops = this.configuration.get(toApply); // list of operations
 
 		for(String op : ops){
-			System.out.print(op); // apply operation to the building
+
+			// System.out.print(op); // apply operation to the building
+			Pattern pattern = Pattern.compile("\\((.*?)\\)");
+			Matcher match = pattern.matcher(op);
+			if(match.find()) {
+				// System.out.println(match.group(1));
+				for (String args : (match.group(1)).split(","))
+					System.out.println(args);
+			}else{
+				System.out.print("NO Match");
+			}
 		}
 	}
 	private boolean checkGoalState(){

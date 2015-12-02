@@ -25,9 +25,9 @@ public class Main {
 		System.out.println(building.configuration.toString());
 
 
-		Planner p = new Planner(building);
+		Planner planner = new Planner(building);
 
-		List<String> result = p.resolve();
+		List<String> result = planner.resolve();
 
 
     }
