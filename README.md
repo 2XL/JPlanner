@@ -1,4 +1,7 @@
 
+Chenglong Zou
+Daniel Rodriguez Romeu
+
 
 ## Planning and Approximate Reasoning
 
@@ -53,23 +56,71 @@ fin:Robot(x2,y2)
 ## Documentation:
 
 
-Introduction to the problem
+1. Introduction to the problem
 
-Analysis of the problem
+El plantejament inicial hauria de ser realitzar un diagrama uml
+amb tots els components implicats amb la resolucio del problema proposat
 
-Planning
+S'ha de resoldre aspectes seguents: s'ha de implementar una estructura de dades per emagatzemar els estats del planificador
+aquesta estructura tindria un forma d'arbre on el punt l'estat final seria l'arrel del arbre
+i l'estat inicial seria una fulla del arbre.
 
-Implementation design
+l'objectiu d'aquesta practica seria realitzar:
+ com a primera aproximació: implemntar un x-chrismas broadcast, partint desde el node final retrocedint fins el node inicial
+ una segona aproximació: podria implicarse, tractar els estats evitant els cicles i bucles. es a dir no continuar la recursivitat si es detecta que l'estat ja existeix
+ per aconseguir aixo podem implementar una taula de hash que indexi els estat tractats.
+ una tercera fase de millora podria consistir en: TODO, none lineal amb regression.
 
-Testing cases and results & Analysis of the results
-
-Instructions to execute the program
+etc.etc.
 
 
 
-# Demo:
+2. Analysis of the problem
 
+
+THINK RECURSIVELY ...
+
+func recurse(state, [next,...])
+
+  if(state(next).apply) # if next possible -> returns next_state
+     recurse(state(next).apply)
+  else
+     ret false  # --> already exist or impossible
+
+
+todo logic into the apply
+
+
+3. Planning
+
+we will implement the Non linear Regression Planner, explained this week
+
+
+4. Implementation design
+
+todo: eclipse auto
+
+diagrama uml?
+
+
+5. Testing cases and results & Analysis of the results
+
+todo: how to show the output?
+
+
+6. Instructions to execute the program
+
+Complete the demo section
+
+
+
+## Demo:
 
 #### step by step demonstration
 
 
+
+
+## TODO:
+
+ # demo configurations...
