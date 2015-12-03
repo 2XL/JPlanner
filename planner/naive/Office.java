@@ -10,7 +10,7 @@ public class Office {
     public boolean isDirty;
     public boolean hasRobot;
     public Map<String, Box> boxes;
-    private Map<String, Office> adjacent_offices;
+    public Map<String, Office> adjacent_offices;
 
     public Office(int column, int row) {
         // TODO Auto-generated constructor stub
@@ -115,7 +115,7 @@ public class Office {
     public void prettyPrint() {
 
         // System.out.format("%1s-%1s :%-5s : %10s : %10s : %10s\n", this.row, this.column, this.name, this.boxes.size(), this.isDirty, this.hasRobot);
-        System.out.format("%1$10s:%2$10s:%3$10s:%4$10s:%5$10s:%6$10s\n", this.row, this.column, this.name, this.boxes.size(), this.isDirty, this.hasRobot);
+        System.out.format("%1$10s:%2$10s:%3$10s:%4$10s:%5$10s:%6$10s\n", this.row, this.column, this.name, this.boxes.keySet(), this.isDirty, this.hasRobot);
 
     }
 }

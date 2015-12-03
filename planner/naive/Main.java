@@ -13,13 +13,14 @@ public class Main {
     	// String config_file_name = "/home/x/Code/JPlaner/src/naive.config.planner/input.txt";
     	
 
-    	Building building = new Building(config_file_name);
-        
+    	Building building1 = new Building(config_file_name);
+    	Building building2 = new Building(config_file_name);
+
         // read the configuration file
-		System.out.println(building.configuration.toString());
+		// System.out.println(building.configuration.toString());
 
 
-		Planner planner = new Planner(building);
+		Planner planner = new Planner(building1, building2);
 		List<String> result = planner.resolve();
 
 

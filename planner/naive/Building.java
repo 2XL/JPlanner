@@ -243,18 +243,24 @@ public class Building {
         }
     }
 
+    /**
+     * Get the hash code of the office distribution
+     * @return
+     */
+    public int getStateHash(){
+        String status = "";
+        for(String key : this.offices.keySet()) {
+            Office o = this.offices.get(key);
+            status += o.boxes.keySet() + (o.isDirty ? "1" : "0") + (o.hasRobot ? "1" : "0");
+        }
+        return status.hashCode();
+    }
     private boolean checkGoalState() {
         // where the boxes are
 
         return true;
     }
 
-    private String getStatusHash() {
-
-        // checks the dirtyness of state
-
-        return "";
-    }
 
 
     // Building State operations
@@ -271,8 +277,7 @@ public class Building {
      * @param o
      */
     public void Robot_location(String o) {
-        System.out.println("Robot_location");
-
+        //System.out.println("Robot_location");
         Office office = this.offices.get(o); // retrieve the office
         office.hasRobot = true;
         this.robot.setOffice(o);
@@ -285,20 +290,15 @@ public class Building {
      * @param o : office
      */
     public void Box_location(String b, String o) {
-
-        System.out.println("Box_location");
+        //System.out.println("Box_location");
         Office office = this.offices.get(o);
         Box box = this.boxes.get(b);
-
         // move the box to a certain office
         office.addBox(b, box);
-
-
     }
 
     public boolean Dirty(String o) {
-
-        System.out.println("Dirty");
+        //System.out.println("Dirty");
         Office office = this.offices.get(o); // make the office dirty
         return office.setDirty();
     }
@@ -306,24 +306,28 @@ public class Building {
 
     public boolean Clean(String o) {
 
-        System.out.println("Clean");
+        //System.out.println("Clean");
         Office office = this.offices.get(o); // make the office clean
         return office.setClean();
     }
 
     public boolean Empty(String o) {
 
-        System.out.println("Empty");
+        //System.out.println("Empty");
         // an office has empty box stacks
         Office office = this.offices.get(o);
         return office.deleteAllBox();
     }
 
+    public List<String> apply(){
 
+        return this.robot.apply();
+        // each apply instead of modifying the model it returns the state after applying the operator :: means the stack of everything
+        // todo
+    }
 
 
     public void prettyPrint(){
-
         System.out.format("%1$10s:%2$10s:%3$10s:%4$10s:%5$10s:%6$10s\n", "Row", "Column", "Name", "Boxes", "isDirty", "hasRobot");
         for(Office[] offices : this.building){
             for(Office office : offices){
