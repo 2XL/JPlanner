@@ -5,10 +5,10 @@ package planner.graph;
  */
 public interface Predicate {
 
-    public void Robot_location(String o);
-    public void Box_location(String b, String o);
-    public void Dirty(String o);
-    public void Clean(String o);
-    public void Empty(String o);
-    public void Adjacent(String a, String b);
+    public boolean Robot_location(String o);
+    public boolean Box_location(String b, String o);
+    public boolean Dirty(String o);
+    public boolean Clean(String o);
+    public boolean Empty(String o);
+    public boolean Adjacent(String a, String b);
 }

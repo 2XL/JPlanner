@@ -14,11 +14,17 @@ public class State extends Building implements Predicate, Operator {
     // this loads the configuration file
     public State(List<Box> bs, List<Office> os, List<String> setup){
         super(bs, os);
-        this.loadSetup(setup);
+
+
+        //apply a given setup
+        // this.loadSetup(setup, false); // check
         // each state consists of an building
 
     }
-    public boolean loadSetup(List<String> ops) {
+    // this one checks  the supperone applies the setup ???
+    public boolean loadSetup(List<String> ops, Boolean apply) {
+
+
         //
         // apply the configuration
         // the loaded configuration should be the same as the
@@ -47,14 +53,24 @@ public class State extends Building implements Predicate, Operator {
                     switch (methodArgs.length) {
                         case 1:
                             System.out.println(methodArgs.length + " 1");
-                            todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class);
-                            todo.invoke(this, methodArgs[0]);
-
+                            if(apply) {
+                                todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class);
+                                todo.invoke(this, methodArgs[0]);
+                            }else{
+                                todo = super.getClass().getDeclaredMethod(methodNameNormal, String.class);
+                                todo.invoke(this, methodArgs[0]);
+                            }
                             break;
                         case 2:
                             System.out.println(methodArgs.length + " 2");
-                            todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class, String.class);
-                            todo.invoke(this, methodArgs[0], methodArgs[1]);
+                            if(apply) {
+                                todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class, String.class);
+                                todo.invoke(this, methodArgs[0], methodArgs[1]);
+                            }else{
+                                todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class, String.class);
+                                todo.invoke(this, methodArgs[0], methodArgs[1]);
+
+                            }
                             break;
                         default:
                             System.out.println("not match");
@@ -82,33 +98,55 @@ public class State extends Building implements Predicate, Operator {
     }
 
     @Override
-    public void Robot_location(String o) {
-
+    public boolean Robot_location(String o) {
+        // Office office = this.offices.get(o); // retrieve the office
+        // this.robot.office = office;
+        return this.robot.office.name == o;
     }
 
     @Override
-    public void Box_location(String b, String o) {
-
+    public boolean Box_location(String b, String o) {
+        Office office = this.offices.get(o);
+        // Box box = this.boxes.get(b);
+        // office.box_list.put(box.name, box);
+        return office.box_list.containsKey(b);
     }
 
     @Override
-    public void Dirty(String o) {
-
+    public boolean Dirty(String o) {
+        Office office = this.offices.get(o);
+        return this.dirty.isDirty(office);
     }
 
     @Override
-    public void Clean(String o) {
-
+    public boolean Clean(String o) {
+        Office office = this.offices.get(o);
+        // this.dirty.removeDirty(office);
+        return !this.dirty.isDirty(office);
     }
 
     @Override
-    public void Empty(String o) {
+    public boolean Empty(String o) {
+        // check each box not containing this office key
+        Office office = this.offices.get(o);
+        return (office.box_list.size() == 0);
 
+        //for(String b : office.box_list.keySet())
+          //  office.box_list.remove(b);
+        // remove all the boxes int the office list
     }
 
     @Override
-    public void Adjacent(String a, String b) {
-
+    public boolean Adjacent(String a, String b) {
+        Office office = this.offices.get(a);
+        return (office.adjacent_list.containsKey(b));
+        //{
+            // do nothing
+          //  return true;
+        //}else{
+            // office.adjacent_list.put(b, this.offices.get(b));
+          //  return false;
+        // }
     }
 
     // this returns possible to apply

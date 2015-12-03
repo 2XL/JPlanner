@@ -21,4 +21,8 @@ public class Dirty {
         this.offices.remove(o);
     }
 
+    public boolean isDirty(Office o){
+        return this.offices.containsKey(o.name);
+    }
+
 }
