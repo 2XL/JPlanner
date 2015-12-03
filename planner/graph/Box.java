@@ -5,6 +5,7 @@ package planner.graph;
  */
 public class Box{
     public String name;
+
     public Box(String name)
     {
         this.name = name;

@@ -17,6 +17,7 @@ public class Building {
         // this.offices = offices;
         for (Office o : offices) {
             this.offices.put(o.name, o);
+            o.box_list = new HashMap<String, Box>();
         }
         //this.boxes = boxes;
         for (Box b : boxes) {
