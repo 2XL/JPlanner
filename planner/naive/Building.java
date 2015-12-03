@@ -61,7 +61,7 @@ public class Building {
                     currentKey = key_value[0];
                     this.configuration.put(currentKey, new ArrayList<String>());
                     line = key_value[1];
-                    System.out.println("\n <<<<<Key: " + currentKey +" >>>>> ");
+                    System.out.println("\n <<<<<Key: " + currentKey + " >>>>> ");
                 } else {
                     // there is no = in the string.
                     line = line;
@@ -155,7 +155,7 @@ public class Building {
 
     }
 
-    private void setupRobot(){
+    private void setupRobot() {
         this.robot = new Robot(this.offices); // initial state out of the map
     }
 
@@ -205,19 +205,19 @@ public class Building {
                 // System.out.println(match.group(1));
                 String[] methodArgs = (match.group(1)).split(",");
                 // for (String args : methodArgs)
-                   // System.out.println(args);
+                // System.out.println(args);
                 // System.out.println();
                 try {
                     Method todo;
-                    System.out.println("::: Print: "+op+" ");
+                    System.out.println("::: Print: " + op + " ");
                     switch (methodArgs.length) {
                         case 1:
-                            System.out.println(methodArgs.length+" 1");
+                            System.out.println(methodArgs.length + " 1");
                             todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class);
                             todo.invoke(this, methodArgs[0]);
                             break;
                         case 2:
-                            System.out.println(methodArgs.length+" 2");
+                            System.out.println(methodArgs.length + " 2");
                             todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class, String.class);
                             todo.invoke(this, methodArgs[0], methodArgs[1]);
                             break;
@@ -245,26 +245,28 @@ public class Building {
 
     /**
      * Get the hash code of the office distribution
+     *
      * @return
      */
-    public int getStateHash(){
+    public int getStateHash() {
         String status = "";
-        for(String key : this.offices.keySet()) {
+        for (String key : this.offices.keySet()) {
             Office o = this.offices.get(key);
             status += o.boxes.keySet() + (o.isDirty ? "1" : "0") + (o.hasRobot ? "1" : "0");
         }
         return status.hashCode();
     }
-    public String getState(){
+
+    public String getState() {
         String status = "";
-        for(String key : this.offices.keySet()) {
+        for (String key : this.offices.keySet()) {
             Office o = this.offices.get(key);
             status += o.boxes.keySet() + (o.isDirty ? "1" : "0") + (o.hasRobot ? "1" : "0");
         }
         return status;
     }
 
-    public List<String> exportBuildingConfig(){
+    public List<String> exportBuildingConfig() {
         List<String> config = new ArrayList<String>();
 
         // Boxes
@@ -272,16 +274,16 @@ public class Building {
         String box_config = "Boxes=";
         String office_config = "Offices=";
 
-        for(String key : this.boxes.keySet()){
-            box_config+=key+",";
+        for (String key : this.boxes.keySet()) {
+            box_config += key + ",";
         }
-        for(String key : this.offices.keySet()){
+        for (String key : this.offices.keySet()) {
             Office o = this.offices.get(key);
-            office_config+=key+",";
-            state+=(o.isDirty ? "Dirty" : "Clean"); // isDirty
-            state+=(o.hasRobot ? "Robot-location("+o.name+");" : ""); // has robot
-            for(String box: o.boxes.keySet())
-                state+=("Box-location("+box+")"); // has robot
+            office_config += key + ",";
+            state += (o.isDirty ? "Dirty" : "Clean"); // isDirty
+            state += (o.hasRobot ? "Robot-location(" + o.name + ");" : ""); // has robot
+            for (String box : o.boxes.keySet())
+                state += ("Box-location(" + box + ")"); // has robot
         }
 
         return config;
@@ -292,7 +294,6 @@ public class Building {
 
         return true;
     }
-
 
 
     // Building State operations
@@ -351,18 +352,30 @@ public class Building {
         return office.deleteAllBox();
     }
 
-    public List<String> apply(){
+    public List<String> apply() {
 
-        return this.robot.apply();
+
+        // bucle infinit que replica i retorna els estats
+        List<String> candidates = this.robot.apply();
+        if (candidates.size() == 0) {
+        } else {
+            for (String key : this.robot.submit()) {
+                // each key is a configuration file
+                Building building = new Building(key);
+                return building.robot.apply();
+            }
+        }
         // each apply instead of modifying the model it returns the state after applying the operator :: means the stack of everything
         // todo
+        return null;
+
     }
 
 
-    public void prettyPrint(){
+    public void prettyPrint() {
         System.out.format("%1$10s:%2$10s:%3$10s:%4$10s:%5$10s:%6$10s\n", "Row", "Column", "Name", "Boxes", "isDirty", "hasRobot");
-        for(Office[] offices : this.building){
-            for(Office office : offices){
+        for (Office[] offices : this.building) {
+            for (Office office : offices) {
                 office.prettyPrint();
             }
         }

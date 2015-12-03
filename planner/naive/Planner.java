@@ -41,7 +41,7 @@ public class Planner {
         //
 
         // Apply action...
-
+        System.out.println("\n");
         System.out.println(initialHashIni + " -> "+ finalHashIni);
         System.out.println(initialHashFin + " -> "+ finalHashFin);
 

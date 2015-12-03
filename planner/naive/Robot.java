@@ -114,5 +114,13 @@ public class Robot {
         return candidate;
     }
 
+    /**
+     * Submit the actions and retrive the conditions applying the postconditions
+     */
+    public List<String> submit(){
+        List<String> configurations = new ArrayList<>();
+        return configurations;
+    }
+
 
 }
