@@ -281,9 +281,9 @@ public class Building {
             Office o = this.offices.get(key);
             office_config += key + ",";
             state += (o.isDirty ? "Dirty" : "Clean"); // isDirty
-            state += (o.hasRobot ? "Robot-location(" + o.name + ");" : ""); // has robot
+            state += (o.hasRobot ? "Planner-location(" + o.name + ");" : ""); // has robot
             for (String box : o.boxes.keySet())
-                state += ("Box-location(" + box + ")"); // has robot
+                state += ("DecorateBox-location(" + box + ")"); // has robot
         }
 
         return config;
@@ -305,7 +305,7 @@ public class Building {
     }
 
     /**
-     * where o is the Office name
+     * where o is the Compenent name
      *
      * @param o
      */

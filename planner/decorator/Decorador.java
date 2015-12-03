@@ -3,10 +3,10 @@ package planner.decorator;
 /**
  * Created by x on 3/12/15.
  */
-public abstract class Decorador extends Componente{
-    private Componente _componente;
+public abstract class Decorador extends Compenent {
+    private Compenent _componente;
 
-    public Decorador(Componente componente){
+    public Decorador(Compenent componente){
         _componente = componente;
     }
 

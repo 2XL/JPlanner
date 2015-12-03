@@ -20,7 +20,7 @@ public class Robot {
     }
 
     /**
-     * TODO appy class where the Robot can choose the next step to forward
+     * TODO appy class where the Planner can choose the next step to forward
      *
      * @param office
      * @return
