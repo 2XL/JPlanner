@@ -3,3 +3,4 @@ demo/*
 documentation.tex
 planner/decorator
 planner/naive
+planner/graph

@@ -1,27 +1,25 @@
 package planner.graph;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by x on 3/12/15.
  */
 public class Office{
 
-    List<Office> adjacent_list;
-    String name;
+    Map<String, Office> adjacent_list;  // static
+    String name; // static
 
     public Office(String name){
         this.name = name;
+        this.adjacent_list = new HashMap<String, Office>();
     }
 
-    public List<String> setupAdjacentOffices(String[][] building){
-        List<String> list = new LinkedList<>();
-
-
-
-
-        return list;
+    public void putAdjacent(Office o){
+        adjacent_list.put(o.name, o);
+    }
+    public Set<String> listAdjacent(){
+        return adjacent_list.keySet();
     }
 
 }
