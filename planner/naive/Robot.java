@@ -100,16 +100,16 @@ public class Robot {
         //
         List<String> candidate = new ArrayList<>();
         if (this.Clean_office(this.office.name)) // try to clean self
-            candidate.add("Clean_office("+this.office.name+")");
+            candidate.add("DoCleanOffice("+this.office.name+")");
 
         for (String key : this.office.adjacent_offices.keySet()) // condition
             if (this.Move(this.office.name, key))
-                candidate.add("Move("+this.office.name+","+key+")");
+                candidate.add("DoMove("+this.office.name+","+key+")");
 
         for (String box : this.office.boxes.keySet())
             for (String key : this.office.adjacent_offices.keySet())
                 if (this.Push(box, this.office.name, key))
-                    candidate.add("Push("+box+","+this.office.name+","+key+")");
+                    candidate.add("DoPush("+box+","+this.office.name+","+key+")");
 
         return candidate;
     }
