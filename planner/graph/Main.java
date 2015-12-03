@@ -29,8 +29,8 @@ public class Main {
         HashMap<String, Set<String>> office_adjacent = setupOfficeAdjacent(offices);
         System.out.println(office_adjacent);
 
-        Building init = new Building(boxes, offices, config.get("InitialState"));
-
+        State init = new State(boxes, offices, config.get("InitialState"));
+        // System.out.print(init.getSetup());
         // Building building1 = new Building(config_file_name);
         // Building building2 = new Building(config_file_name);
 

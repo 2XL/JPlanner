@@ -1,23 +1,37 @@
 package planner.graph;
 
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by x on 3/12/15.
  */
-public class Building {
+public abstract class Building{
 
     HashMap<String, Office> offices;
     HashMap<String, Box> boxes;
     Robot robot;
     Dirty dirty;
-    public Building(List<Box> boxes, List<Office> offices, List<String> setup) {
+
+    public Building(){
+
+    }
+
+    public Building(List<Box> boxes, List<Office> offices) {
+
         // this.offices = offices;
+        this.offices = new HashMap<String, Office>();
+        this.boxes = new HashMap<String, Box>();
+
         for (Office o : offices) {
             this.offices.put(o.name, o);
-            o.box_list = new HashMap<String, Box>();
+            o.box_list = new HashMap<String, Box>(); // box_list at each office is reset
         }
         //this.boxes = boxes;
         for (Box b : boxes) {
@@ -25,16 +39,9 @@ public class Building {
         }
         this.robot = new Robot(); // un related robot
         this.dirty = new Dirty(); //
-        this.loadSetup(setup);
+        // this.loadSetup(setup);
     }
 
-    public boolean loadSetup(List<String> setup) {
-        //
-        // apply the configuration
-        // the loaded configuration should be the same as the
-        //
-        return true;
-    }
 
     public List<String> getSetup() {
         // export only the operations

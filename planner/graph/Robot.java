@@ -11,6 +11,7 @@ public class Robot {
     }
 
     public Robot(){
+        this.office = new Office("NONE");
 
     }
 
