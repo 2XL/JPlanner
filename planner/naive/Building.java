@@ -255,6 +255,38 @@ public class Building {
         }
         return status.hashCode();
     }
+    public String getState(){
+        String status = "";
+        for(String key : this.offices.keySet()) {
+            Office o = this.offices.get(key);
+            status += o.boxes.keySet() + (o.isDirty ? "1" : "0") + (o.hasRobot ? "1" : "0");
+        }
+        return status;
+    }
+
+    public List<String> exportBuildingConfig(){
+        List<String> config = new ArrayList<String>();
+
+        // Boxes
+        String state = "InitialState=";
+        String box_config = "Boxes=";
+        String office_config = "Offices=";
+
+        for(String key : this.boxes.keySet()){
+            box_config+=key+",";
+        }
+        for(String key : this.offices.keySet()){
+            Office o = this.offices.get(key);
+            office_config+=key+",";
+            state+=(o.isDirty ? "Dirty" : "Clean"); // isDirty
+            state+=(o.hasRobot ? "Robot-location("+o.name+");" : ""); // has robot
+            for(String box: o.boxes.keySet())
+                state+=("Box-location("+box+")"); // has robot
+        }
+
+        return config;
+    }
+
     private boolean checkGoalState() {
         // where the boxes are
 
