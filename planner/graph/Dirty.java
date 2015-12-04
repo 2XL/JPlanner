@@ -10,15 +10,18 @@ public class Dirty {
     HashMap<String, Office> offices;
 
     public Dirty() {
-        this.offices = new HashMap<>();
+
+        this.offices = new HashMap<String, Office>();
     }
 
     public void addDirty(Office o) {
-        this.offices.put(o.name, o);
+        // if (!this.offices.containsKey(o))
+            this.offices.put(o.name, o);
     }
 
     public void removeDirty(Office o) {
-        this.offices.remove(o);
+        // if(this.offices.containsKey(o))
+            this.offices.remove(o.name);
     }
 
     public boolean isDirty(Office o){

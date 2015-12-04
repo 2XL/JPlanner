@@ -5,7 +5,7 @@ package planner.graph;
  */
 public interface Operator {
 
-    public boolean Clean_office();
-    public boolean Move();
-    public boolean Push();
+    public boolean Clean_office(String office);
+    public boolean Move(String office1, String office2);
+    public boolean Push(String box, String office1, String office2);
 }

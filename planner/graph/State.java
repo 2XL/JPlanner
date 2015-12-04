@@ -1,7 +1,10 @@
 package planner.graph;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,30 +14,31 @@ import java.util.regex.Pattern;
  */
 public class State extends Building implements Predicate, Operator {
 
+    Boolean hasSetup; // if true then it has already loaded hasSetup, otherwise its a template of building
+    List<String> configuration;
     // this loads the configuration file
-    public State(List<Box> bs, List<Office> os, List<String> setup){
+    public State(List<Box> bs, List<Office> os, List<String> setup) {
         super(bs, os);
 
-
-        //apply a given setup
-        // this.loadSetup(setup, false); // check
+        //apply a given hasSetup
+        this.configuration = setup;
+        this.hasSetup = false;
+        this.loadSetup(setup); // check
+        this.hasSetup = true;
         // each state consists of an building
 
     }
-    // this one checks  the supperone applies the setup ???
-    public boolean loadSetup(List<String> ops, Boolean apply) {
 
-
+    // this one checks  the supperone applies the hasSetup ???
+    public boolean loadSetup(List<String> ops) {
         //
         // apply the configuration
         // the loaded configuration should be the same as the
         //
-
         //String parameter
         Class[] paramString = new Class[1];
         paramString[0] = String.class;
 
-        //
         for (String op : ops) {
             // System.out.print(op); // apply operation to the building
             String methodName = op.substring(0, op.indexOf('('));
@@ -49,28 +53,20 @@ public class State extends Building implements Predicate, Operator {
                 // System.out.println();
                 try {
                     Method todo;
-                    System.out.println("::: Print: " + op + " ");
+                    MethodHandle test;
+                    //System.out.println("\n::: Print: " + op + " ");
                     switch (methodArgs.length) {
                         case 1:
-                            System.out.println(methodArgs.length + " 1");
-                            if(apply) {
-                                todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class);
-                                todo.invoke(this, methodArgs[0]);
-                            }else{
-                                todo = super.getClass().getDeclaredMethod(methodNameNormal, String.class);
-                                todo.invoke(this, methodArgs[0]);
-                            }
+                            // System.out.println(methodArgs.length + " 1");
+                            todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class);
+                            todo.invoke(this, methodArgs[0]);
                             break;
                         case 2:
-                            System.out.println(methodArgs.length + " 2");
-                            if(apply) {
-                                todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class, String.class);
-                                todo.invoke(this, methodArgs[0], methodArgs[1]);
-                            }else{
-                                todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class, String.class);
-                                todo.invoke(this, methodArgs[0], methodArgs[1]);
+                            //  System.out.println(methodArgs.length + " 2");
 
-                            }
+                            todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class, String.class);
+                            todo.invoke(this, methodArgs[0], methodArgs[1]);
+
                             break;
                         default:
                             System.out.println("not match");
@@ -86,6 +82,8 @@ public class State extends Building implements Predicate, Operator {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
                 }
 
             } else {
@@ -99,70 +97,204 @@ public class State extends Building implements Predicate, Operator {
 
     @Override
     public boolean Robot_location(String o) {
+        //System.out.println("State Robot_location " + o);
         // Office office = this.offices.get(o); // retrieve the office
         // this.robot.office = office;
-        return this.robot.office.name == o;
+        if (this.hasSetup)
+            return (this.robot.office.name == o);
+        else
+            return super.Robot_location(o);
     }
 
     @Override
     public boolean Box_location(String b, String o) {
+        //System.out.println("State Box_location [" + b + "] " + o);
         Office office = this.offices.get(o);
         // Box box = this.boxes.get(b);
         // office.box_list.put(box.name, box);
-        return office.box_list.containsKey(b);
+        if (this.hasSetup)
+            return (office.box_list.containsKey(b));
+        else
+            return super.Box_location(b, o);
     }
 
     @Override
     public boolean Dirty(String o) {
+        //System.out.println("State Dirty " + o);
         Office office = this.offices.get(o);
-        return this.dirty.isDirty(office);
+        if (this.hasSetup)
+            return (this.dirty.isDirty(office));
+        else
+            return super.Dirty(o);
+
     }
+
 
     @Override
     public boolean Clean(String o) {
+        //System.out.println("State Clean " + o);
         Office office = this.offices.get(o);
         // this.dirty.removeDirty(office);
-        return !this.dirty.isDirty(office);
+        if (this.hasSetup)
+            return (!this.dirty.isDirty(office));
+        else
+            return super.Clean(o);
+
     }
 
     @Override
     public boolean Empty(String o) {
+        // System.out.println("State Empty " + o);
         // check each box not containing this office key
         Office office = this.offices.get(o);
-        return (office.box_list.size() == 0);
-
+        if (this.hasSetup)
+            return (office.box_list.size() == 0);
+        else
+            return super.Empty(o);
         //for(String b : office.box_list.keySet())
-          //  office.box_list.remove(b);
+        //  office.box_list.remove(b);
         // remove all the boxes int the office list
     }
 
     @Override
     public boolean Adjacent(String a, String b) {
+        // System.out.println("State Adjacent " + a + " : " + b);
         Office office = this.offices.get(a);
-        return (office.adjacent_list.containsKey(b));
+        if (this.hasSetup)
+            return (office.adjacent_list.containsKey(b));
+        else
+            return super.Adjacent(a, b);
         //{
-            // do nothing
-          //  return true;
+        // do nothing
+        //  return true;
         //}else{
-            // office.adjacent_list.put(b, this.offices.get(b));
-          //  return false;
+        // office.adjacent_list.put(b, this.offices.get(b));
+        //  return false;
         // }
     }
 
-    // this returns possible to apply
 
+    // -----------------------------------------------------
+    // this returns possible to apply this are operators
+    // -----------------------------------------------------
     @Override
-    public boolean Clean_office() {
-        return false;
+    public boolean Clean_office(String o) {
+        // this should retrieve a list of possible operations
+        if (this.Robot_location(o) && this.Dirty(o) && this.Empty(o))
+            return true;
+        else
+            return false;
     }
 
     @Override
-    public boolean Move() {
-        return false;
+    public boolean Move(String o1, String o2) {
+        if (this.Robot_location(o1) && Adjacent(o1, o2))
+            return true;
+        else
+            return false;
     }
 
     @Override
-    public boolean Push() {
-        return false;
+    public boolean Push(String b, String o1, String o2) {
+        if (this.Robot_location(o1) && this.Box_location(b, o1) && this.Adjacent(o1, o2) && this.Empty(o2))
+            return true;
+        else
+            return false;
     }
+
+
+    public HashMap<String, List<String>> expand() {
+
+        List<String> candidateOperator = new ArrayList<>();
+        if (this.Clean_office(this.robot.office.name)) {
+            candidateOperator.add("Clean_Office(" + this.robot.office.name + ")");
+        }
+
+        for (String key : this.robot.office.adjacent_list.keySet())
+            if (this.Move(this.robot.office.name, key))
+                candidateOperator.add("Move(" + this.robot.office.name + "," + key + ")");
+        // apply the operators
+
+        for (String box : this.boxes.keySet())
+            for (String key : this.robot.office.adjacent_list.keySet())
+                if (this.Push(box, this.robot.office.name, key))
+                    candidateOperator.add("Push(" + box + "," + this.robot.office.name + "," + key + ")");
+
+        List<String> currSetup = this.getSetup();
+        //System.out.print(currSetup);
+        HashMap<String, List<String>> result = new HashMap<>();
+        for (String key : candidateOperator) {
+            List<String> status = new ArrayList<>();
+            // extract the method
+            // System.out.println(key);
+            status = this.apply(key);
+            result.put(key, status);
+            // result.add(status);
+        }
+        return result;
+    }
+
+    private List<String> apply(String op){
+     // cast operation type
+
+        // load the configuration as a hash map
+        HashMap<String, String> predicates = new HashMap<>();
+        for(String key : this.configuration){
+            predicates.put(key, key);
+        }
+
+        // System.out.print(op); // apply operation to the building
+        String methodName = op.substring(0, op.indexOf('('));
+        String methodNameNormal = methodName.replaceAll("-", "_");
+        Pattern pattern = Pattern.compile("\\((.*?)\\)");
+        Matcher match = pattern.matcher(op);
+        if (match.find()) {
+            // System.out.println(match.group(1));
+            String[] args = (match.group(1)).split(",");
+
+            switch (methodNameNormal) {
+
+                case "Clean_Office":
+                    // do add
+
+                    String clean = "Clean("+ args[0]+")";
+                    predicates.put(clean,clean);
+                    // do remove
+                    String dirty = "Dirty("+ args[0]+")";
+                    predicates.remove(dirty);
+                    break;
+                case "Move": // ofice1 to office2
+                    // do add
+                    String robot_location_new = "Robot-location("+args[1]+")";
+                    predicates.put(robot_location_new,robot_location_new);
+                    // do remove
+                    String robot_location_old = "Robot-location("+args[0]+")";
+                    predicates.remove(robot_location_old);
+                    break;
+                case "Push":
+                    // do add
+                    String box_location_new = "Box-location("+args[0]+","+args[2]+")";
+                    predicates.put(box_location_new, box_location_new);
+                    String push_robot_location_new = "Robot-location("+args[2]+")";
+                    predicates.put(push_robot_location_new, push_robot_location_new);
+                    String empty_new = "Empty("+args[1]+")";
+                    predicates.put(empty_new, empty_new );
+                    // do remove
+                    predicates.remove("");
+                    String empty_old = "Empty("+args[2]+")";
+                    predicates.remove(empty_old);
+                    String box_location_old = "Box-location("+args[0]+","+args[1]+")";
+                    predicates.remove(box_location_old);
+                    String push_robot_location_old = "Robot-location("+args[1]+")";
+                    predicates.remove(push_robot_location_old);
+                    break;
+                default:
+                    System.out.println("Unknown operation " + op);
+                    break;
+            }
+        }
+        return new ArrayList<>(predicates.values());
+
+    }
+
 }
