@@ -207,7 +207,7 @@ public class State extends Building implements Predicate, Operator {
 
         List<String> candidateOperator = new ArrayList<>();
         if (this.Clean_office(this.robot.office.name)) {
-            candidateOperator.add("Clean_Office(" + this.robot.office.name + ")");
+            candidateOperator.add("Clean-Office(" + this.robot.office.name + ")");
         }
 
         for (String key : this.robot.office.adjacent_list.keySet())
@@ -220,16 +220,10 @@ public class State extends Building implements Predicate, Operator {
                 if (this.Push(box, this.robot.office.name, key))
                     candidateOperator.add("Push(" + box + "," + this.robot.office.name + "," + key + ")");
 
-        List<String> currSetup = this.getSetup();
-        //System.out.print(currSetup);
+
         HashMap<String, List<String>> result = new HashMap<>();
         for (String key : candidateOperator) {
-            List<String> status = new ArrayList<>();
-            // extract the method
-            // System.out.println(key);
-            status = this.apply(key);
-            result.put(key, status);
-            // result.add(status);
+            result.put(key, new ArrayList<>(this.apply(key)));
         }
         return result;
     }
@@ -256,7 +250,6 @@ public class State extends Building implements Predicate, Operator {
 
                 case "Clean_Office":
                     // do add
-
                     String clean = "Clean("+ args[0]+")";
                     predicates.put(clean,clean);
                     // do remove

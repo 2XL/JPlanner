@@ -28,12 +28,14 @@ public class Main {
 
         // hasSetup office adjacent
         HashMap<String, Set<String>> office_adjacent = setupOfficeAdjacent(offices);
-        System.out.println(office_adjacent);
+        // System.out.println(office_adjacent);
 
         List<String> initialState = config.get("InitialState");
         Collections.sort(initialState);
         List<String> finalState = config.get("GoalState");
         Collections.sort(finalState);
+        List<String> testFinal = config.get("State1");
+        Collections.sort(testFinal);
 
         // una matriu d'estats
         List<HashMap<String, List<String>>> state = new ArrayList<>(); // una llista d'estats -> cada posicio del array correspon a un nivell d'expansio
@@ -52,18 +54,17 @@ public class Main {
         //System.out.println("Real fin: " + finalState.toString());
 
 
-        List<String> currentSetup = initialState;
-
-
+        State test = new State(boxes, offices, testFinal);
+        List<String> testi = test.getSetup();
         // every level
-        HashMap<String, List<String>> current = new HashMap<>();
+        HashMap<String, Integer> current = new HashMap<>();
 
 
-
-        State currentState = new State(boxes, offices, currentSetup);
+        State currentState = new State(boxes, offices, initialState);
 
         // current is to void recursion and stack is to know the paths or hops
-        recursive(currentState, 10000000, finalState, current, new ArrayList<>()); // report with hash stack
+        // recursive(currentState, 2, testi, current, new ArrayList<>()); // report with hash stack
+        recursive(currentState, 14, finnale, current, new ArrayList<>()); // report with hash stack
         // System.out.print(result);
 
         // currentSetup.expand(); // retrieve list of new setups
@@ -201,7 +202,7 @@ public class Main {
     public static boolean compareSetup(List<String> ini, List<String> fin) {
         java.util.Collections.sort(ini);
         java.util.Collections.sort(fin);
-        if (ini.equals(fin)) {
+        if (ini.toString().equals(fin.toString())) {
             System.out.println("Found");
             return true;
         } else {
@@ -210,32 +211,110 @@ public class Main {
         }
     }
 
-    public static void recursive(State state, int depth, List<String> goalState, HashMap<String, List<String>> stateStack, ArrayList<String> ops) {
-        depth -= 1;
+    /**
+     * @param state      : current state to be expanded
+     * @param depth      : current state depth
+     * @param goalState  : the goal state to be achieved
+     * @param stateStack : stack Of states to avoid loops
+     * @param ops
+     */
+    public static void recursive(State state, int depth, List<String> goalState, HashMap<String, Integer> stateStack, ArrayList<String> ops) {
+
+            if(depth == ops.size())
+            return;
+        // System.out.println("Depth: " + depth);
+        HashMap<String, List<String>> candidates;
+        candidates = state.expand();
+        for (String key : candidates.keySet()) {
+
+            // System.out.print(key);
+            List<String> nextConfig = candidates.get(key);
+            Collections.sort(nextConfig);
+            // System.out.println(nextConfig);
+
+            if(nextConfig.equals(goalState)) {
+                System.out.println("Found! "+ops.toString());
+            }
+            else{
+                // System.out.println("Continue");
+                State nextState = new State(new ArrayList<Box>(state.boxes.values()),
+                        new ArrayList<Office>(state.offices.values()), nextConfig);
+                ArrayList<String> operationStack = new ArrayList<>(ops);
+                operationStack.add(key);
+                if(!stateStack.containsKey(nextConfig))
+                    recursive(nextState, depth, goalState, stateStack, operationStack);
+            }
+            /*
+            Collections.sort(config);
+
+            if (compareSetup(config, goalState)) {
+                // return "["+depth+"] "+key; // it the init is same as final quit
+                ops.add(key);
+                System.out.println("[" + ops.size() + "] Found \n" + ops.toString());
+            } else {
+                if (depth >= ops.size()) // if depth greater than zero then lookup, otherwise quit
+                {
+                    if(stateStack.containsKey(config.toString()))
+                        continue;
+                    else
+                        stateStack.put(config.toString(), ops.size());
+                    ArrayList ops_this = new ArrayList<>();
+                    ops_this.add(key);
+                    // System.out.println(ops_this);
+                    recursive(
+                            new State(
+                                    new ArrayList<>(state.boxes.values()),
+                                    new ArrayList<>(state.offices.values()), config),
+                            depth,
+                            goalState,
+                            stateStack,
+                            ops_this);
+                }
+            }
+            */
+
+
+        }
+        // System.out.println("[" + depth + "] Limit Depth" + ops.toString());
+    }
+
+}
+
+
+/*
+   depth -= 1;
         // System.out.println("Depth: " + depth);
         if (depth >= 0) // if depth greater than zero then lookup, otherwise quit
         {
             HashMap<String, List<String>> candidate = null;
             candidate = state.expand();
             for (String key : candidate.keySet()) {
-                ops.add(key);
+
                 List<String> config = candidate.get(key);
                 // System.out.print(config);
                 Collections.sort(config);
-                if (stateStack.containsKey(config.toString())) // loop
+                if (stateStack.containsKey(config.toString())) { // loop
                     // return "["+depth+"] Loop"; // continue lookup
-                    // System.out.println("["+depth+"] Loop"+ops.toString());
-                    continue;
-                else
-                    stateStack.put(config.toString(), config);
-                if (compareSetup(config, goalState)) // finished
-                    // return "["+depth+"] "+key; // it the init is same as final quit
-                    System.out.println("["+ops.size()+"] Found \n"+ops.toString());
-                else // continue
-                    recursive(new State(new ArrayList<>(state.boxes.values()), new ArrayList<>(state.offices.values()), config), depth, goalState, stateStack, new ArrayList<>(ops));
+                     // System.out.println("[" + depth + "] Loop" + ops.toString());
+                     if(stateStack.get(config.toString()) < ops.size()){
+                        // continue; // hiha un que ha arribat aqui amb menys operacions que jo
+                     //}else{
+                       //  stateStack.put(config.toString(), ops.size()); // update with lower value
+                        // ops.add(key);
+                        // recursive(new State(new ArrayList<>(state.boxes.values()), new ArrayList<>(state.offices.values()), config), depth, goalState, stateStack, new ArrayList<>(ops));
+                     }
+                } else { // continue
+                    stateStack.put(config.toString(), ops.size());
+                    if (compareSetup(config, goalState)) { // finished
+                        // return "["+depth+"] "+key; // it the init is same as final quit
+                        ops.add(key);
+                        System.out.println("[" + ops.size() + "] Found \n" + ops.toString());
+                    }else // continue
+                    {
+                        ops.add(key);
+                        recursive(new State(new ArrayList<>(state.boxes.values()), new ArrayList<>(state.offices.values()), config), depth, goalState, stateStack, new ArrayList<>(ops));
+                    }
+                }
             }
         }
-        // System.out.println( "["+depth+"] Limit Depth" + ops.toString());
-    }
-
-}
+ */
