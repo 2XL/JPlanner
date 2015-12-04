@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
 
-        String config_file_name = System.getProperty("user.dir") + "/src/config/config.2.easy.conf";
+        String config_file_name = System.getProperty("user.dir") + "/src/config/config.3.hard.conf";
         System.out.println("Working Directory = " + config_file_name);
         Map<String, List<String>> config = loadConfigHashMap(config_file_name);
         System.out.println(config);
@@ -63,7 +63,7 @@ public class Main {
         State currentState = new State(boxes, offices, currentSetup);
 
         // current is to void recursion and stack is to know the paths or hops
-        recursive(currentState, 1000, finalState, current, new ArrayList<>()); // report with hash stack
+        recursive(currentState, 10000000, finalState, current, new ArrayList<>()); // report with hash stack
         // System.out.print(result);
 
         // currentSetup.expand(); // retrieve list of new setups
