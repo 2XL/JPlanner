@@ -64,7 +64,7 @@ public class Main {
 
         // current is to void recursion and stack is to know the paths or hops
         // recursive(currentState, 2, testi, current, new ArrayList<>()); // report with hash stack
-        recursive(currentState, 14, finnale, current, new ArrayList<>()); // report with hash stack
+        recursive(currentState, 13, finnale, current, new ArrayList<>(), compareSetup(initialState, finalState)); // report with hash stack
         // System.out.print(result);
 
         // currentSetup.expand(); // retrieve list of new setups
@@ -199,16 +199,22 @@ public class Main {
         return adjacent;
     }
 
-    public static boolean compareSetup(List<String> ini, List<String> fin) {
-        java.util.Collections.sort(ini);
-        java.util.Collections.sort(fin);
+    public static int compareSetup(List<String> currState, List<String> goalState) {
+        // java.util.Collections.sort(ini);
+        // java.util.Collections.sort(fin);
+        List<String> tempCurr = new ArrayList<>(currState);
+        tempCurr.removeAll(goalState);
+        return tempCurr.size();  // retorna to lo que hiha match // higher the better
+        // if this is 0 we get closest
+        /*
         if (ini.toString().equals(fin.toString())) {
             System.out.println("Found");
-            return true;
+            return diff; // mean no difference
         } else {
             // System.out.println("KeepLookUp");
             return false;
         }
+        */
     }
 
     /**
@@ -218,31 +224,32 @@ public class Main {
      * @param stateStack : stack Of states to avoid loops
      * @param ops
      */
-    public static void recursive(State state, int depth, List<String> goalState, HashMap<String, Integer> stateStack, ArrayList<String> ops) {
-
-            if(depth == ops.size())
+    public static void recursive(State state, int depth, List<String> goalState, HashMap<String, Integer> stateStack, ArrayList<String> ops, int diff) {
+        // System.out.println("");
+        if (depth == ops.size())
             return;
         // System.out.println("Depth: " + depth);
         HashMap<String, List<String>> candidates;
         candidates = state.expand();
         for (String key : candidates.keySet()) {
-
             // System.out.print(key);
             List<String> nextConfig = candidates.get(key);
             Collections.sort(nextConfig);
             // System.out.println(nextConfig);
 
-            if(nextConfig.equals(goalState)) {
-                System.out.println("Found! "+ops.toString());
-            }
-            else{
-                // System.out.println("Continue");
+            int newDiff = compareSetup(nextConfig, goalState); // not further to the goalstate
+            if (newDiff == 0) {
+                System.out.println("Found! " + ops.toString());
+            } else {
+                if (diff < newDiff)
+                    return; // nos alejamos
+                // System.out.println("Continue: ["+key+"] "+diff+ " --> "+newDiff +" ["+ops.toString()+"]");
                 State nextState = new State(new ArrayList<Box>(state.boxes.values()),
                         new ArrayList<Office>(state.offices.values()), nextConfig);
                 ArrayList<String> operationStack = new ArrayList<>(ops);
                 operationStack.add(key);
-                if(!stateStack.containsKey(nextConfig))
-                    recursive(nextState, depth, goalState, stateStack, operationStack);
+                if (!stateStack.containsKey(nextConfig))
+                    recursive(nextState, depth, goalState, stateStack, operationStack, newDiff);
             }
             /*
             Collections.sort(config);
