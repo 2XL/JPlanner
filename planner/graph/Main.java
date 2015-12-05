@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
  */
 public class Main {
 
+    private static int currentBestPath = Integer.MAX_VALUE;
+
     public static void main(String[] args) throws IOException {
 
 
@@ -34,7 +36,7 @@ public class Main {
         Collections.sort(initialState);
         List<String> finalState = config.get("GoalState");
         Collections.sort(finalState);
-        List<String> testFinal = config.get("State1");
+        List<String> testFinal = config.get("InitialState");
         Collections.sort(testFinal);
 
         // una matriu d'estats
@@ -64,7 +66,7 @@ public class Main {
 
         // current is to void recursion and stack is to know the paths or hops
         // recursive(currentState, 2, testi, current, new ArrayList<>()); // report with hash stack
-        recursive(currentState, 13, finnale, current, new ArrayList<>(), compareSetup(initialState, finalState)); // report with hash stack
+        recursive(currentState, 12, finnale, current, new ArrayList<>(), compareSetup(initialState, finalState)); // report with hash stack
         // System.out.print(result);
 
         // currentSetup.expand(); // retrieve list of new setups
@@ -202,8 +204,18 @@ public class Main {
     public static int compareSetup(List<String> currState, List<String> goalState) {
         // java.util.Collections.sort(ini);
         // java.util.Collections.sort(fin);
+
         List<String> tempCurr = new ArrayList<>(currState);
         tempCurr.removeAll(goalState);
+
+        if (currentBestPath > tempCurr.size()) // need a global variable to keep track of the current best
+        {
+            System.out.println("There is a closer one: "+currentBestPath+" --> "+tempCurr.size());
+            currentBestPath = tempCurr.size();
+        }else{
+
+            //System.out.println("Skip this: "+currentBestPath+" --> "+tempCurr.size());
+        }
         return tempCurr.size();  // retorna to lo que hiha match // higher the better
         // if this is 0 we get closest
         /*
@@ -226,6 +238,8 @@ public class Main {
      */
     public static void recursive(State state, int depth, List<String> goalState, HashMap<String, Integer> stateStack, ArrayList<String> ops, int diff) {
         // System.out.println("");
+
+
         if (depth == ops.size())
             return;
         // System.out.println("Depth: " + depth);
@@ -238,19 +252,29 @@ public class Main {
             // System.out.println(nextConfig);
 
             int newDiff = compareSetup(nextConfig, goalState); // not further to the goalstate
-            if (newDiff == 0) {
+            if (newDiff == 1) {
                 System.out.println("Found! " + ops.toString());
+                return;
             } else {
-                if (diff < newDiff)
-                    return; // nos alejamos
-                // System.out.println("Continue: ["+key+"] "+diff+ " --> "+newDiff +" ["+ops.toString()+"]");
-                State nextState = new State(new ArrayList<Box>(state.boxes.values()),
-                        new ArrayList<Office>(state.offices.values()), nextConfig);
-                ArrayList<String> operationStack = new ArrayList<>(ops);
-                operationStack.add(key);
-                if (!stateStack.containsKey(nextConfig))
-                    recursive(nextState, depth, goalState, stateStack, operationStack, newDiff);
+                if (newDiff-5 > currentBestPath) { // 4 movimientos de margen?
+                    // 0 movimientos de margen, como permitir que se expandan mas?
+                    // si deixo 12 operacions per collons lo trobara, requisit precondicio saber on se troban...
+                    return;
+                } else {
+                    //System.out.println("Continue: [" + key + "] " + diff + "/" + currentBestPath + " --> " + newDiff + " [" + ops.toString() + "] ");
+                    State nextState = new State(new ArrayList<Box>(state.boxes.values()),
+                            new ArrayList<Office>(state.offices.values()), nextConfig);
+                    ArrayList<String> operationStack = new ArrayList<>(ops);
+                    operationStack.add(key);
+                    if (!stateStack.containsKey(nextConfig))
+                        recursive(nextState, depth, goalState, stateStack, operationStack, newDiff);
+
+
+                }
+
             }
+
+
             /*
             Collections.sort(config);
 
