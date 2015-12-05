@@ -22,7 +22,6 @@ public abstract class Building implements Predicate {
 
     public Building(List<Box> boxes, List<Office> offices) {
 
-        // this.offices = offices;
         this.offices = new HashMap<String, Office>();
         this.boxes = new HashMap<String, Box>();
 
@@ -30,13 +29,11 @@ public abstract class Building implements Predicate {
             this.offices.put(o.name, o);
             o.box_list = new HashMap<String, Box>(); // box_list at each office is reset
         }
-        //this.boxes = boxes;
         for (Box b : boxes) {
             this.boxes.put(b.name, b);
         }
         this.robot = new Robot(); // un related robot
         this.dirty = new Dirty(); //
-        // this.loadSetup(hasSetup);
     }
 
 
@@ -48,7 +45,6 @@ public abstract class Building implements Predicate {
             if (this.dirty.offices.containsKey(o.name)) {
                 state.add("Dirty(" + o.name + ")");
             }
-
             else {
                 state.add("Clean(" + o.name + ")");
             }
@@ -125,15 +121,7 @@ public abstract class Building implements Predicate {
             office.adjacent_list.put(b, this.offices.get(b));
             //return false;
         }
-
         return (office.adjacent_list.containsKey(b));
-        //{
-        // do nothing
-        //  return true;
-        //}else{
-        // office.adjacent_list.put(b, this.offices.get(b));
-        //  return false;
-        // }
     }
 
 

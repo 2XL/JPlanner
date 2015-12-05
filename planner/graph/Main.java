@@ -4,12 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.Semaphore;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by x on 3/12/15.
@@ -18,22 +13,22 @@ public class Main {
 
     private static int currentBestPath = Integer.MAX_VALUE;
     private static List<String> bestSolution;
-    private static Semaphore semaphore = new Semaphore(1);
+    private static int estimatedDepth = 13;
+    private static String config_file_name = System.getProperty("user.dir") + "/src/config/config.3.hard.conf";
 
     public static void main(String[] args) throws IOException {
 
-
-        String config_file_name = System.getProperty("user.dir") + "/src/config/config.3.hard.conf";
         System.out.println("Working Directory = " + config_file_name);
         Map<String, List<String>> config = loadConfigHashMap(config_file_name);
         System.out.println(config);
+
         // start the boxes && offices
         ArrayList<Box> boxes = loadBoxes(config.get("Boxes"));
         ArrayList<Office> offices = loadOffices(config.get("Offices"));
 
         // hasSetup office adjacent
         HashMap<String, Set<String>> office_adjacent = setupOfficeAdjacent(offices);
-        // System.out.println(office_adjacent);
+        System.out.println(office_adjacent);
 
         List<String> initialState = config.get("InitialState");
         Collections.sort(initialState);
@@ -42,10 +37,10 @@ public class Main {
         List<String> testFinal = config.get("InitialState");
         Collections.sort(testFinal);
 
-        // una matriu d'estats
-        List<HashMap<String, List<String>>> state = new ArrayList<>(); // una llista d'estats -> cada posicio del array correspon a un nivell d'expansio
-        //
-        Map<String, List<String>> stateHash = new HashMap<>(); // un hash map stats, where String is the hash
+        // una matriu d'estats // una llista d'estats -> cada posicio del array correspon a un nivell d'expansio
+        List<HashMap<String, List<String>>> state = new ArrayList<>();
+        // un hash map stats, where String is the hash
+        Map<String, List<String>> stateHash = new HashMap<>();
         // refactoring into a linkedlist of nodes
 
         State init = new State(boxes, offices, initialState);
@@ -69,47 +64,13 @@ public class Main {
 
         // current is to void recursion and stack is to know the paths or hops
         // recursive(currentState, 2, testi, current, new ArrayList<>()); // report with hash stack
-        int estimatedSteps = 13;
-        recursive(currentState, estimatedSteps, finnale, current, new ArrayList<>(), compareSetup(initialState, finalState)); // report with hash stack
+        recursive(currentState, estimatedDepth, finnale, current, new ArrayList<>(), compareSetup(initialState, finalState)); // report with hash stack
         // setps means
         if (bestSolution == null) {
             System.out.println("Not found");
         } else {
             System.out.print(bestSolution.size() + " -> " + bestSolution);
         }
-        // System.out.print(result);
-
-        // currentSetup.expand(); // retrieve list of new setups
-
-        // for each possible operations
-
-        // expand() recursive function that retrieves all the applyable operations
-
-        // for each applyable operation create a building to retrieve the next state after applying the configuration
-
-
-        // after each apply check and compare the state obtained if state is new expand() else existing quit
-
-        // util matching the finnale state
-
-        // state.add(fini.getSetup());
-
-
-        // compareSetup(state.get(0), initialState);
-
-        // compareSetup(state.get(1), finalState);
-        // System.out.print(init.getSetup());
-        // Building building1 = new Building(config_file_name);
-        // Building building2 = new Building(config_file_name);
-
-        // read the configuration file
-        // System.out.println(building.configuration.toString());
-
-
-        //Planner planner = new Planner(building1, building2);
-        //List<String> result = planner.resolve();
-
-
     }
 
     public static Map loadConfigHashMap(String config_file_name) throws IOException {
@@ -237,46 +198,40 @@ public class Main {
      * @param ops
      */
     public static void recursive(State state, int depth, List<String> goalState, HashMap<String, Integer> stateStack, ArrayList<String> ops, int oldDiff) {
-        // System.out.println("");
-        // refactor oldDiff and newDiff into a circular buffer, with length limited, or an stack with limited amount of attempts
         // System.out.println("Depth: " + ops.size()); // no es lineal...
-
         HashMap<String, List<String>> candidates;
         candidates = state.expand();
 
         for (String key : candidates.keySet()) {
-
             List<String> nextConfig = candidates.get(key);
             //Collections.sort(nextConfig);
             ArrayList<String> operationStack = new ArrayList<>(ops);
             operationStack.add(key);
             int newDiff = compareSetup(nextConfig, goalState); // not further to the goalstate
 
-            /**
-             *
-             */
             if (newDiff == 0) {
                 if (bestSolution == null) {
                     bestSolution = operationStack;
                 } else {
                     if (bestSolution.size() > operationStack.size())
                         bestSolution = operationStack;
-                    // shorter solution found
                 }
                 continue;
             } else {
                 if (( depth - operationStack.size()) < newDiff) {
                     // System.out.println("Impossible: (" + operationStack.size() + "/" + depth + ") remain [" + newDiff+"]");
                     continue; // impossible
-
-                } else { // try with the following state
+                } else {
                     //System.out.println("Continue: [" + key + "] " + diff + "/" + currentBestPath + " --> " + newDiff + " [" + ops.toString() + "] ");
                     State nextState = new State(new ArrayList<>(state.boxes.values()),
                             new ArrayList<>(state.offices.values()), nextConfig);
                     if (depth == ops.size())
-                        continue;
-                    if (!stateStack.containsKey(nextConfig))
+                        continue; // depth limit reached
+                    if (!stateStack.containsKey(nextConfig)) {
                         recursive(nextState, depth, goalState, stateStack, operationStack, newDiff);
+                    }else{
+                        continue; // state repetition
+                    }
                 }
             }
         }
