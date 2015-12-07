@@ -13,8 +13,16 @@ public class Main {
 
     private static int currentBestPath = Integer.MAX_VALUE;
     private static List<String> bestSolution;
-    private static int estimatedDepth = 13;
-    private static String config_file_name = System.getProperty("user.dir") + "/src/config/config.3.hard.conf";
+    private static int level = 1;
+    private static int estimatedDepth = 100;
+    private static int impossiblePath = 0;
+    // private static int limitDepthPath = 0;
+    private static int looperPath = 0;
+    private static int foundPath = 0;
+    private static int stoppedPath = 0;
+    private static int skippedPath = 0;
+
+    private static String config_file_name = System.getProperty("user.dir") + "/src/config/config.3.level." + level + ".conf";
 
     public static void main(String[] args) throws IOException {
 
@@ -64,13 +72,28 @@ public class Main {
 
         // current is to void recursion and stack is to know the paths or hops
         // recursive(currentState, 2, testi, current, new ArrayList<>()); // report with hash stack
-        recursive(currentState, estimatedDepth, finnale, current, new ArrayList<>(), compareSetup(initialState, finalState)); // report with hash stack
+
+
+        // recursive(currentState, estimatedDepth, finnale, current, new ArrayList<>(), compareSetup(initialState, finalState)); // report with hash stack
+
+
+
         // setps means
         if (bestSolution == null) {
             System.out.println("Not found");
         } else {
             System.out.print(bestSolution.size() + " -> " + bestSolution);
         }
+        System.out.println("\n" +
+                "------------------------------------------" +
+                "Results:" +
+                "\n\tIMPOSSIBLE: " + impossiblePath + "" +
+               // "\n\tDEPTHLIMIT: " + limitDepthPath + "" +
+                "\n\tLOOPERPATH: " + looperPath + "" +
+                "\n\tFOUND_PATH: " + foundPath + "" +
+                "\n\tFORCE_QUIT: " + stoppedPath + "" +
+                "\n" +
+                "------------------------------------------");
     }
 
     public static Map loadConfigHashMap(String config_file_name) throws IOException {
@@ -199,6 +222,8 @@ public class Main {
      */
     public static void recursive(State state, int depth, List<String> goalState, HashMap<String, Integer> stateStack, ArrayList<String> ops, int oldDiff) {
         // System.out.println("Depth: " + ops.size()); // no es lineal...
+
+
         HashMap<String, List<String>> candidates;
         candidates = state.expand();
 
@@ -216,25 +241,44 @@ public class Main {
                     if (bestSolution.size() > operationStack.size())
                         bestSolution = operationStack;
                 }
+                foundPath++;
                 continue;
             } else {
-                if (( depth - operationStack.size()) < newDiff) {
+                if ((depth - operationStack.size()) < newDiff) {
                     // System.out.println("Impossible: (" + operationStack.size() + "/" + depth + ") remain [" + newDiff+"]");
+                    impossiblePath++;
                     continue; // impossible
                 } else {
+
+                    // more loggic to skip, local skip, need to keep track of self tail.
+                    if(skipThis(newDiff, operationStack, null))
+                        continue;
+
+                    //
                     //System.out.println("Continue: [" + key + "] " + diff + "/" + currentBestPath + " --> " + newDiff + " [" + ops.toString() + "] ");
                     State nextState = new State(new ArrayList<>(state.boxes.values()),
                             new ArrayList<>(state.offices.values()), nextConfig);
-                    if (depth == ops.size())
-                        continue; // depth limit reached
-                    if (!stateStack.containsKey(nextConfig)) {
+
+                    if (!stateStack.containsKey(nextConfig) ) {// check if state already exists
+                        if (bestSolution != null) { // quit if there is already an solution... el que pasa aqui es que no se sincronitza la profunditat
+                            stoppedPath++;
+                            continue;
+                        }
+                        stateStack.put(nextConfig.toString(), newDiff); //
                         recursive(nextState, depth, goalState, stateStack, operationStack, newDiff);
-                    }else{
+                    } else {
+                        looperPath++;
                         continue; // state repetition
                     }
                 }
             }
         }
+    }
+
+    public static boolean skipThis(int currentDiff, List<String> ops, List<List<Integer>> matrix){
+
+
+        return false; //
     }
 
 }
