@@ -15,13 +15,14 @@ public class Main {
 
     private static int currentBestPath = Integer.MAX_VALUE;
     private static Map<Integer, String> bestSolution;
-    private static int level = 1;
-    private static int dim = 2;
+    private static int level = 2;
+    private static int dim = 3;
     private static boolean found = false;
     private static int estimatedDepth = 16;
     private static int impossiblePath = 0;
     // private static int limitDepthPath = 0;
     private static int looperPath = 0;
+    private static int operationCounter = 0;
     private static int foundPath = 0;
     private static int stoppedPath = 0;
     private static int skippedPath = 0;
@@ -81,25 +82,30 @@ public class Main {
          */
         Map<Integer, List<State>> nextMap = new HashMap<>();
 
+        String finalhash = digestHash(finalState);
         int diff = compareSetup(initialState, finalState);
         currState.add(currentState);
         nextMap.put(diff, currState);
         int depth = 0;
-        int depthLimit = estimatedDepth;
         try {
-            while (!found) {
+            while (!found && nextMap.keySet().size() != 0) {
                 System.out.println(depth++ + " Size " + nextMap.keySet());
-                nextMap = iterative(nextMap, finnale, stateHash);
 
+                nextMap = iterative(nextMap, finnale, stateHash);
+                /*
                 int index = 0;
                 for (Integer key : nextMap.keySet()) {
                     if (index > 10)
                         nextMap.remove(key);
                     index++;
                 }
-
-                if (nextMap.keySet().size() == 0)
-                    break;
+                */
+/*
+                for (Integer key : nextMap.keySet()) {
+                    System.out.print("[" + key + ":" + nextMap.get(key).size() + "],");
+                }
+                System.out.println(finalhash);
+*/
             }
         } catch (NullPointerException e) {
             //  System.out.print(e.getStackTrace());
@@ -128,6 +134,7 @@ public class Main {
                 "\n\tFORCE_QUIT: " + stoppedPath + "" +
                 "\n\tDUMMY_QUIT: " + dummyPath + "" +
                 "\n\tSKIPP_QUIT: " + skippedPath + "" +
+                "\n\tTOTAL_CONF: " + operationCounter + "" +
                 "\n" +
                 "------------------------------------------");
     }
@@ -265,6 +272,7 @@ public class Main {
             for (State state : expandedState) {
                 HashMap<String, List<String>> candidates = state.expand();
                 for (String operation : candidates.keySet()) {
+                    operationCounter++;
                     List<String> candState = candidates.get(operation);
 
                     if (visitedState.containsKey(digestHash(candState))) {
@@ -288,12 +296,11 @@ public class Main {
                     if (state.parent != null) {
 
 
-                        if (state.difference  < newDiff) {
+                        if (state.difference < newDiff) {
                             //
                             dummyPath++;
                             continue; // going the wrong way
                         }
-
 
 
                         // this op, parent op, parent.parent op
@@ -325,7 +332,6 @@ public class Main {
                     if (!nextMap.containsKey(newDiff)) {
                         nextMap.put(newDiff, new ArrayList<>());
                     }
-
                     nextMap.get(newDiff).add(new State(state, candState, operation, newDiff));
 
 
@@ -403,9 +409,12 @@ public class Main {
     public static String digestHash(List<String> state) {
         Collections.sort(state);
         String result = "";
+        /*
         for (String s : state) {
             result += s.hashCode();
         }
+        */
+        result += state.toString().hashCode();
         return result;
     }
 

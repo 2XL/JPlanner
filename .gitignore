@@ -1,6 +1,5 @@
 .idea
 demo/*
 documentation.tex
-planner/decorator
-planner/naive
-planner/tree
+planner/decorator/*
+planner/naive/*
