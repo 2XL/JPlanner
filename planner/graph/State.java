@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,10 +17,29 @@ public class State extends Building implements Predicate, Operator {
 
     Boolean hasSetup; // if true then it has already loaded hasSetup, otherwise its a template of building
     List<String> configuration;
+    int depth = 0;
+    int difference = Integer.MAX_VALUE;
+    String operation;
+    State parent;
+
+    public State(State parent, List<String> setup, String operation, int diff){
+        super(new ArrayList<>(parent.boxes.values()), new ArrayList<>(parent.offices.values()));
+
+        this.operation = operation;
+        this.parent = parent;
+        this.depth = this.parent.depth + 1;
+        this.difference = diff;
+        this.configuration = setup;
+        this.hasSetup = false;
+        this.loadSetup(setup); // check
+        this.hasSetup = true;
+    }
+
     // this loads the configuration file
     public State(List<Box> bs, List<Office> os, List<String> setup) {
         super(bs, os);
-
+        this.parent = null;
+        this.operation = null;
         //apply a given hasSetup
         this.configuration = setup;
         this.hasSetup = false;
@@ -36,10 +56,9 @@ public class State extends Building implements Predicate, Operator {
         // the loaded configuration should be the same as the
         //
         //String parameter
-        Class[] paramString = new Class[1];
-        paramString[0] = String.class;
-
-        for (String op : ops) {
+        Iterator<String> iter = ops.iterator();
+        while (iter.hasNext()) {
+            String op = iter.next();
             // System.out.print(op); // apply operation to the building
             String methodName = op.substring(0, op.indexOf('('));
             String methodNameNormal = methodName.replaceAll("-", "_");
@@ -75,10 +94,14 @@ public class State extends Building implements Predicate, Operator {
                     // System.out.println("Print: "+methodNameNormal+ " DONE");
 
                 } catch (NoSuchMethodException e) {
+                    System.out.println(methodNameNormal);
+                    System.out.println(op);
                     e.printStackTrace();
                 } catch (SecurityException e) {
                     e.printStackTrace();
                 } catch (InvocationTargetException e) {
+                    System.out.println(methodNameNormal);
+                    System.out.println(op);
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();

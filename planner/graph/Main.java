@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by x on 3/12/15.
@@ -12,23 +14,27 @@ import java.util.*;
 public class Main {
 
     private static int currentBestPath = Integer.MAX_VALUE;
-    private static List<String> bestSolution;
+    private static Map<Integer, String> bestSolution;
     private static int level = 1;
-    private static int estimatedDepth = 100;
+    private static int dim = 2;
+    private static boolean found = false;
+    private static int estimatedDepth = 16;
     private static int impossiblePath = 0;
     // private static int limitDepthPath = 0;
     private static int looperPath = 0;
     private static int foundPath = 0;
     private static int stoppedPath = 0;
     private static int skippedPath = 0;
+    private static int dummyPath = 0;
 
-    private static String config_file_name = System.getProperty("user.dir") + "/src/config/config.3.level." + level + ".conf";
+    private static String config_file_name = System.getProperty("user.dir") + "/src/config/config." + dim + ".level." + level + ".conf";
 
     public static void main(String[] args) throws IOException {
 
         System.out.println("Working Directory = " + config_file_name);
         Map<String, List<String>> config = loadConfigHashMap(config_file_name);
-        System.out.println(config);
+        for (String item : config.keySet())
+            System.out.println("[" + item + "] :" + config.get(item));
 
         // start the boxes && offices
         ArrayList<Box> boxes = loadBoxes(config.get("Boxes"));
@@ -69,6 +75,35 @@ public class Main {
 
 
         State currentState = new State(boxes, offices, initialState);
+        List<State> currState = new ArrayList<>();
+        /**
+         * Sort by diff, lower diff first
+         */
+        Map<Integer, List<State>> nextMap = new HashMap<>();
+
+        int diff = compareSetup(initialState, finalState);
+        currState.add(currentState);
+        nextMap.put(diff, currState);
+        int depth = 0;
+        int depthLimit = estimatedDepth;
+        try {
+            while (!found) {
+                System.out.println(depth++ + " Size " + nextMap.keySet());
+                nextMap = iterative(nextMap, finnale, stateHash);
+
+                int index = 0;
+                for (Integer key : nextMap.keySet()) {
+                    if (index > 10)
+                        nextMap.remove(key);
+                    index++;
+                }
+
+                if (nextMap.keySet().size() == 0)
+                    break;
+            }
+        } catch (NullPointerException e) {
+            //  System.out.print(e.getStackTrace());
+        }
 
         // current is to void recursion and stack is to know the paths or hops
         // recursive(currentState, 2, testi, current, new ArrayList<>()); // report with hash stack
@@ -77,21 +112,22 @@ public class Main {
         // recursive(currentState, estimatedDepth, finnale, current, new ArrayList<>(), compareSetup(initialState, finalState)); // report with hash stack
 
 
-
         // setps means
-        if (bestSolution == null) {
+        if (found == false) {
             System.out.println("Not found");
         } else {
-            System.out.print(bestSolution.size() + " -> " + bestSolution);
+            System.out.println(bestSolution.size() + " -> " + bestSolution);
         }
         System.out.println("\n" +
                 "------------------------------------------" +
                 "Results:" +
                 "\n\tIMPOSSIBLE: " + impossiblePath + "" +
-               // "\n\tDEPTHLIMIT: " + limitDepthPath + "" +
+                // "\n\tDEPTHLIMIT: " + limitDepthPath + "" +
                 "\n\tLOOPERPATH: " + looperPath + "" +
                 "\n\tFOUND_PATH: " + foundPath + "" +
                 "\n\tFORCE_QUIT: " + stoppedPath + "" +
+                "\n\tDUMMY_QUIT: " + dummyPath + "" +
+                "\n\tSKIPP_QUIT: " + skippedPath + "" +
                 "\n" +
                 "------------------------------------------");
     }
@@ -209,11 +245,101 @@ public class Main {
         {
             System.out.println("There is a closer one: " + currentBestPath + " --> " + tempCurr.size());
             currentBestPath = tempCurr.size();
+
         }
         return tempCurr.size();
     }
 
+
     /**
+     * @param mapExpState
+     * @param finalState
+     * @param visitedState
+     * @return
+     */
+    public static Map<Integer, List<State>> iterative(Map<Integer, List<State>> mapExpState, List<String> finalState, Map<String, List<String>> visitedState) {
+        Map<Integer, List<State>> nextMap = new HashMap<>();
+        SortedSet<Integer> keys = new TreeSet<>(mapExpState.keySet());
+        for (Integer key : keys) {
+            List<State> expandedState = mapExpState.get(key);
+            for (State state : expandedState) {
+                HashMap<String, List<String>> candidates = state.expand();
+                for (String operation : candidates.keySet()) {
+                    List<String> candState = candidates.get(operation);
+
+                    if (visitedState.containsKey(digestHash(candState))) {
+                        looperPath++;
+                        continue;
+                    }
+
+                    int newDiff = compareSetup(candState, finalState);
+
+                    if (newDiff == 0) {
+                        System.out.print("Solution: ");
+                        bestSolution = new HashMap<>();
+                        while (state.parent != null) {
+                            bestSolution.put(state.depth, state.operation);
+                            state = state.parent;
+                        }
+                        found = true;
+                        bestSolution.put(bestSolution.size() + 1, operation);
+                        return null; // quit
+                    }
+                    if (state.parent != null) {
+
+
+                        if (state.difference  < newDiff) {
+                            //
+                            dummyPath++;
+                            continue; // going the wrong way
+                        }
+
+
+
+                        // this op, parent op, parent.parent op
+                        /*
+                        if (state.parent.parent != null) {
+                            int mLoop = (1 + operation + state.operation + state.parent.operation).split("M").length;
+                            int pLoop = (1 + operation + state.operation + state.parent.operation).split("P").length;
+                            // System.out.println("Match"+match);
+                            if (pLoop == 4 || mLoop == 4) {
+                                Pattern pattern = Pattern.compile("\\((.*?)\\)");
+                                Matcher match = pattern.matcher(operation);
+                                if (match.find()) {
+                                    String[] methodArgs = (match.group(1)).split(",");
+                                    // System.out.println(match.group(1));
+                                    if (state.parent.parent.robot.office.adjacent_list.containsKey(methodArgs[0])) {
+                                        skippedPath++;
+                                        continue;
+                                    }
+                                }
+
+                            }
+                        }
+                        */
+
+
+                    }
+
+
+                    if (!nextMap.containsKey(newDiff)) {
+                        nextMap.put(newDiff, new ArrayList<>());
+                    }
+
+                    nextMap.get(newDiff).add(new State(state, candState, operation, newDiff));
+
+
+                    visitedState.put(digestHash(candState), candState);
+
+                }
+            }
+        }
+        return nextMap;
+    }
+
+    /**
+     * This implementation requires to being serialized
+     *
      * @param state      : current state to be expanded
      * @param depth      : current state depth
      * @param goalState  : the goal state to be achieved
@@ -236,10 +362,10 @@ public class Main {
 
             if (newDiff == 0) {
                 if (bestSolution == null) {
-                    bestSolution = operationStack;
+                    // bestSolution = operationStack;
                 } else {
-                    if (bestSolution.size() > operationStack.size())
-                        bestSolution = operationStack;
+                    //  if (bestSolution.size() > operationStack.size())
+                    //   bestSolution = operationStack;
                 }
                 foundPath++;
                 continue;
@@ -250,16 +376,15 @@ public class Main {
                     continue; // impossible
                 } else {
 
-                    // more loggic to skip, local skip, need to keep track of self tail.
-                    if(skipThis(newDiff, operationStack, null))
-                        continue;
+                    // more loggic to skip, local skip, need to keep track of self operation tail.
+
 
                     //
                     //System.out.println("Continue: [" + key + "] " + diff + "/" + currentBestPath + " --> " + newDiff + " [" + ops.toString() + "] ");
                     State nextState = new State(new ArrayList<>(state.boxes.values()),
                             new ArrayList<>(state.offices.values()), nextConfig);
 
-                    if (!stateStack.containsKey(nextConfig) ) {// check if state already exists
+                    if (!stateStack.containsKey(nextConfig)) {// check if state already exists
                         if (bestSolution != null) { // quit if there is already an solution... el que pasa aqui es que no se sincronitza la profunditat
                             stoppedPath++;
                             continue;
@@ -275,7 +400,16 @@ public class Main {
         }
     }
 
-    public static boolean skipThis(int currentDiff, List<String> ops, List<List<Integer>> matrix){
+    public static String digestHash(List<String> state) {
+        Collections.sort(state);
+        String result = "";
+        for (String s : state) {
+            result += s.hashCode();
+        }
+        return result;
+    }
+
+    public static boolean skipThis() {
 
 
         return false; //
