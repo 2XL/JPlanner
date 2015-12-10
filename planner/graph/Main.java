@@ -15,7 +15,7 @@ public class Main {
 
     private static int currentBestPath = Integer.MAX_VALUE;
     private static Map<Integer, String> bestSolution;
-    private static int level = 2;
+    private static int level = 3;
     private static int dim = 3;
     private static boolean found = false;
     private static int estimatedDepth = 16;

@@ -76,15 +76,44 @@ public class State extends Building implements Predicate, Operator {
                     //System.out.println("\n::: Print: " + op + " ");
                     switch (methodArgs.length) {
                         case 1:
+                            /*
+                            switch (methodNameNormal){
+                                case "Empty":
+                                    this.Empty(methodArgs[0]);
+                                    break;
+                                case "Clean":
+                                    this.Clean(methodArgs[0]);
+                                    break;
+                                case "Dirty":
+                                    this.Dirty(methodArgs[0]);
+                                    break;
+                                case "Robot_location":
+                                    this.Robot_location(methodArgs[0]);
+                                    break;
+                                default:
+                                    System.out.print("Ops not found");
+                                    break;
+                            }
+                            */
                             // System.out.println(methodArgs.length + " 1");
                             todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class);
                             todo.invoke(this, methodArgs[0]);
                             break;
                         case 2:
                             //  System.out.println(methodArgs.length + " 2");
-
+                            /*
+                            switch (methodNameNormal){
+                                case "Box_location":
+                                    this.Box_location(methodArgs[0], methodArgs[1]);
+                                    break;
+                                default:
+                                    System.out.print("Ops not found");
+                                    break;
+                            }
+                            */
                             todo = this.getClass().getDeclaredMethod(methodNameNormal, String.class, String.class);
                             todo.invoke(this, methodArgs[0], methodArgs[1]);
+
 
                             break;
                         default:
@@ -93,18 +122,7 @@ public class State extends Building implements Predicate, Operator {
                     }
                     // System.out.println("Print: "+methodNameNormal+ " DONE");
 
-                } catch (NoSuchMethodException e) {
-                    System.out.println(methodNameNormal);
-                    System.out.println(op);
-                    e.printStackTrace();
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    System.out.println(methodNameNormal);
-                    System.out.println(op);
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
                 }
