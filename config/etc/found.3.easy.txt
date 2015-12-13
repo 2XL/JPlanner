@@ -1,2 +1,0 @@
-[2] Found 
-[Move(o4,o7), Move(o7,o8)]

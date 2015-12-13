@@ -11,8 +11,7 @@ import java.util.*;
  */
 public class RunnerRegression extends Runner{
 
-    Boolean planFound;
-    Deque<Node> plan; // ordered deck of queue // double ended list...
+
     public RunnerRegression() {
         super();
         this.planFound = false;

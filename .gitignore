@@ -1,5 +1,2 @@
 .idea
-demo/*
-documentation.tex
-planner/decorator/*
-planner/naive/*
+*.log

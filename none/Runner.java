@@ -1,6 +1,9 @@
 package none;
 
 import none.config.Loader;
+import none.state.Node;
+
+import java.util.Deque;
 
 /**
  * Created by j on 12/12/2015.
@@ -8,6 +11,8 @@ import none.config.Loader;
 public abstract class Runner {
 
     Metrics metrics;
+    Boolean planFound;
+    Deque<Node> plan; // ordered deck of queue // double ended list...
 
     public Runner() {
     }
