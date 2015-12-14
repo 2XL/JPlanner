@@ -28,15 +28,12 @@ public abstract class Node {
 
     public Deque<_Predicate> getDiff(Node node){
         Deque<_Predicate> diff = new LinkedList<>();
-
-
-
-
-
-
         return diff;
     }
 
+    public List<_Predicate> getPredicates(){
+        return this.predicates;
+    }
 
 
 }
