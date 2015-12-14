@@ -27,11 +27,11 @@ public class Main {
         Set : collection that contains no duplicated
         List: collection that contains ordered elements
          */
-        planners.put(RunnerNaive.class.getSimpleName(), new RunnerNaive());
+        planners.put(RunnerLinear.class.getSimpleName(), new RunnerLinear());
         planners.put(RunnerRegression.class.getSimpleName(), new RunnerRegression());
         planners.put(RunnerRestriction.class.getSimpleName(), new RunnerRestriction());
 
-        Loader configuration = new Loader(1);
+        Loader configuration = new Loader(0);
 
         try {
             //while (true) {

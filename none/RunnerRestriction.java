@@ -25,8 +25,8 @@ public class RunnerRestriction extends Runner{
         System.out.println("Runner Restriction Runner");
 
 
-        Node initState = new State(config.getInitialState());
-        Node goalState = new State(config.getGoalState());
+        Node initState = new State(config.getInitialState(), config);
+        Node goalState = new State(config.getGoalState(), config);
 
         // Deque<Node> expansionTree = new LinkedList<>(); // cola de exploracion
         // expansionTree.add(initState);

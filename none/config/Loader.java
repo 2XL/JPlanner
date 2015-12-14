@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class is has the role to load the initial state and final state from the configuration file
@@ -16,13 +17,25 @@ public class Loader {
 
     private int dimension = 3; // this states the dimension of the puzzle
     String config_file_path;
-    Map<String, List<String>> config;
-    ArrayList<Box> boxes;
-    ArrayList<Office> offices;
-    HashMap<String, Set<String>> office_adjacent;
+    Map<String, List<String>> config; // raw configuration parameters
+    ArrayList<Box> boxes; // boxes
+    ArrayList<Office> offices; // offices
+    Map<String, Box> map_box;
+    Map<String, Office> map_office;
+    Map<String, List<Office>> map_office_adjacent;
+    HashMap<String, Set<String>> office_adjacent; // hash map of adjacent offices
 
+    /**
+     * This class parse the default configuration file into this loader class
+     * @param level
+     */
     public Loader(int level) {
+        if(level == 0){
+            this.dimension = 2;
+        }
         this.config_file_path = System.getProperty("user.dir") + "/src/none/config/config." + this.dimension + ".level." + level + ".txt";
+        this.load(); // load the configuration at @level
+        this.initMaps();
     }
 
     private void load() {
@@ -32,9 +45,29 @@ public class Loader {
         this.office_adjacent = this.setupOfficeAdjacent(this.offices);
     }
 
+    private void initMaps(){
+        this.map_box = new HashMap<>();
+        for(Box b : this.boxes){
+            this.map_box.put(b.name, b);
+        }
+        this.map_office = new HashMap<>();
+        for(Office o : this.offices){
+            this.map_office.put(o.name, o);
+        }
+        this.map_office_adjacent = new HashMap<>();
+        for(String key: this.office_adjacent.keySet()){
+            List<Office> adj_offices = new LinkedList<>();
+            Set<String> adj = this.office_adjacent.get(key);
+            adj_offices.addAll(adj.stream().map(this.map_office::get).collect(Collectors.toList()));
+            this.map_office_adjacent.put(key, adj_offices);
+        }
+
+    }
+
     public List<String> getInitialState(){
         return this.config.get("InitialState");
     }
+
     public List<String> getGoalState(){
         return this.config.get("GoalState");
     }
@@ -95,7 +128,6 @@ public class Loader {
         return offices;
     }
 
-
     public HashMap<String, Set<String>> setupOfficeAdjacent(List<Office> offices) {
         HashMap<String, Set<String>> adjacent = new HashMap<>();
         int dim = (int) Math.sqrt(offices.size());
@@ -142,6 +174,17 @@ public class Loader {
             adjacent.put(o.name, o.listAdjacent());
         }
         return adjacent;
+    }
+
+
+    public Box getBox(String box){
+        return this.map_box.get(box);
+    }
+    public Office getOffice(String office){
+        return this.map_office.get(office);
+    }
+    public List<Office> getAdjacentOffice(String office){
+        return this.map_office_adjacent.get(office);
     }
 
     public static void main(String[] args) throws IOException {
