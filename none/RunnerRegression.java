@@ -108,7 +108,7 @@ public class RunnerRegression extends Runner {
 
     public static void main(String[] args) {
         RunnerRegression run = new RunnerRegression();
-        Loader loader = new Loader(2);
+        Loader loader = new Loader(10);
         run.execute(loader);
     }
 }
