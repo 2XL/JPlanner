@@ -122,31 +122,31 @@ public class State extends Node {
                 pred.add(p);
         }
         // predicates to be considered
-        System.out.println(pred);
+        //System.out.println(pred);
         State s;
         for (_Predicate p : pred) {
             // only handle the states where im involved
             String predicate = p.getClass().getSimpleName();
             switch (predicate) {
                 case "Clean": // if there are no office to be cleaned then do nothing
-                    System.out.println("CleanOffice -> " + predicate);
+                    //System.out.println("CleanOffice -> " + predicate);
                     // si predicat es clean intentare embrutarho
                     CleanOffice clean_office = new CleanOffice(p.getOffice(), this);
                     s = clean_office.revert();
                     if (s instanceof State) {
-                        System.out.println("Clean to expansion");
+                        //System.out.println("Clean to expansion");
                         expansion.add(s); // returns a list of candidate nodes
                     }
                     // add operation clean myself
                     break;
                 case "BoxLocation": // if the box has to be moved ill move it even if its not within one step
-                    System.out.println("Push -> " + predicate);
+                    //System.out.println("Push -> " + predicate);
                     // move the box to all it is adjacent
                     for (Office o : this.location.getAdjacents()) {
                         Push push = new Push(p.getBox(), this.location, o, this);
                         s = push.apply();
                         if (s instanceof State) {
-                            System.out.println("Push to expansion");
+                            //System.out.println("Push to expansion");
                             expansion.add(s); // returns a list of candidates nodes to be expanded or pushed to the queue
                         }
                     }
@@ -154,26 +154,26 @@ public class State extends Node {
                     break;
             }
 
-            System.out.println(expansion);
+            //System.out.println(expansion);
             // only add if it doesn't already exist
             if (expansion.size() == 0) {
-                System.out.println("List State Empty");
+                //System.out.println("List State Empty");
             }
         }
 
         if (expansion.size() == 0) { // try to move
-            System.out.println("N O O P!");
+            //System.out.println("N O O P!");
             for (Office o : this.location.getAdjacents()) {
                 Move move = new Move(this.location, o, this);
                 s = move.apply();
                 if (s instanceof State) {
-                    System.out.println("Move to expansion");
+                    //System.out.println("Move to expansion");
                     expansion.add(s);
                 }
             }
         }
-        System.out.println("RETURN");
-        System.out.println(expansion);
+        //System.out.println("RETURN");
+        //System.out.println(expansion);
         return expansion;
     }
 

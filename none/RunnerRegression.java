@@ -12,6 +12,18 @@ import java.util.*;
  * Created by j on 12/12/2015.
  */
 public class RunnerRegression extends Runner {
+
+    public static void main(String[] args) {
+        RunnerRegression run = new RunnerRegression();
+        Loader loader = new Loader(6);
+        run.execute(loader);
+    }
+
+    int stateAppend = 0;
+    int stateSkipped = 0;
+    int depth = 0;
+    int depthLimit = 5;
+
     public RunnerRegression() {
         super();
         this.planFound = false;
@@ -28,9 +40,9 @@ public class RunnerRegression extends Runner {
 //        State initState = new State(config.getGoalState(), config);
 //        State goalState = new State(config.getInitialState(), config);
 
-        System.out.print("InitialState: \t");
+        System.out.println("InitialState: \t");
         System.out.println(config.getInitialState());
-        System.out.print("GoalState: \t");
+        System.out.println("GoalState: \t");
         System.out.println(config.getGoalState());
 
         Map<String, State> expansionHistory = new HashMap<>(); // contains a history of all the expanded states / hash, state
@@ -39,22 +51,22 @@ public class RunnerRegression extends Runner {
         expansionTree.add(goalState);
         expansionHistory.put(goalState.toString(), goalState);
 
-        int depth = 0;
-        int depthLimit = 100;
+        // int depth = 0;
         while (expansionTree.size() > 0 && !this.planFound && depth < depthLimit) {
-            System.out.println("\n:::: " + depth + "/" + depthLimit + " exp: "+expansionTree.size()+" next: "+nextExpansionTree.size());
+            System.out.println("\n:::: " + depth + "/" + depthLimit + " exp: " + expansionTree.size() + " next: " + nextExpansionTree.size());
             State n = expansionTree.removeFirst(); // primer nodo pendiente de explorar
 
             // n.getState()
             // System.out.println(n.getState());
             List<_Predicate> p = n.compareSetup(initState); // list of predicates that doesn't match
-            System.out.println("CURR: "+n.getState());
-            System.out.println("DIFF: "+p); // get list of predicates that doesn't match, this has to be resolved by operators
+            // System.out.println("CURR: "+n.getState());
+            // System.out.println("DIFF: "+p); // get list of predicates that doesn't match, this has to be resolved by operators
             List<State> candidates = n.expand(p); // expandir nodo pendiente de explorar en anchura
-            System.out.println("CAND: "+candidates);
+            // System.out.println("CAND: "+candidates);
             // for each candidate configuration state
             for (State candState : candidates) {
-                // System.out.println(candState.getState());
+                System.out.print(n.getOperator() +" --> ");
+                System.out.println(candState.getOperator());
                 if (candState.compareSetup(initState).size() == 0) { // if it matches the initial state
                     System.out.println("[Match] ");
                     this.planFound = true;
@@ -63,9 +75,11 @@ public class RunnerRegression extends Runner {
                 String digest = candState.toString();
                 if (expansionHistory.containsKey(digest)) {
                     // aixo es podria moure a la classe state que mantingui una llista estatic de totes les instancies.
-                    System.out.println("Skipped");
+                    // System.out.println("Skipped");
+                    this.stateSkipped++;
                 } else {
-                    System.out.println("Append");
+                    // System.out.println("Append");
+                    this.stateAppend++;
                     /*
                     for (State state : expansionHistory.values()) {
                         System.out.println(state.getState());
@@ -91,9 +105,9 @@ public class RunnerRegression extends Runner {
         if(this.planFound){
             System.out.println("\nSOLUTION: \n");
             //System.out.println(this.plan);
-            int steps = this.plan.size();
+            int steps = 1;
             for(_Operator op : this.plan){
-                System.out.println(steps-- +"\t --> "+op.toString());
+                System.out.println(steps++ +"\t --> "+op.toString());
             }
             System.out.println("");
         }else{ // plan impossible to find
@@ -104,11 +118,11 @@ public class RunnerRegression extends Runner {
 
         System.out.println("Runner Regression Runner");
         System.out.println("Elapsed time: " + this.metrics.getElapsed());
+        System.out.println("Skipped:  "+this.stateSkipped);
+        System.out.println("Appended: "+this.stateAppend);
+        System.out.println("Depth:    "+this.depth);
+
     }
 
-    public static void main(String[] args) {
-        RunnerRegression run = new RunnerRegression();
-        Loader loader = new Loader(10);
-        run.execute(loader);
-    }
+
 }

@@ -41,6 +41,11 @@ public class Push extends _Operator {
         return false;
     }
 
+    public boolean reverse_check(){
+        return check();
+    }
+
+
     public void add() {
         _Predicate p1 = new BoxLocation(this.box, this.nextOffice);
         this.precondition.put(p1.toString(), p1);
@@ -72,13 +77,14 @@ public class Push extends _Operator {
         }
 
 
-        System.out.println("Push instance ");
+        // System.out.println("Push instance ");
         return result;
         // i can push the box to many adjacent
     }
 
     @Override
     public String toString() {
-        return "Push("+this.box.name+","+this.office.name+","+this.nextOffice.name+")";
+       // return "Push("+this.box.name+","+this.office.name+","+this.nextOffice.name+")";
+        return "Push("+this.box.name+","+this.nextOffice.name+","+this.office.name+")";
     }
 }

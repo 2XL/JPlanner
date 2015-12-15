@@ -81,7 +81,7 @@ public class CleanOffice extends _Operator {
                     this.parent,
                     this));
         }
-        System.out.println("CleanOffice instance");
+        // System.out.println("CleanOffice instance");
         return result;
     }
 
@@ -95,7 +95,7 @@ public class CleanOffice extends _Operator {
             this.parent,
             this);
         }
-        System.out.println("DirtyOffice instance");
+        // System.out.println("DirtyOffice instance");
         return result;
     }
 

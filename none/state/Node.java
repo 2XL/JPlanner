@@ -24,29 +24,34 @@ public abstract class Node {
     }
     */
 
-    public Deque<_Operator> getPlan(){
+    public Deque<_Operator> getPlan() {
         Deque<_Operator> plan = new LinkedList<>();
-        for(Node node : getTrace()){
+        for (Node node : getTrace()) {
             plan.add(node.operator);
         }
-        return  plan;
+        return plan;
     }
 
-    public Deque<Node> getTrace(){
+    public _Operator getOperator() {
+        return this.operator;
+    }
+
+    public Deque<Node> getTrace() {
         Deque<Node> deque = new LinkedList<>();
         Node n = this;
-        do{
+        do {
             deque.add(n);
             n = n.parent;
-        }while (n.parent != null);
+        } while (n.parent != null);
         return deque;
     }
-    public Deque<_Predicate> getDiff(Node node){
+
+    public Deque<_Predicate> getDiff(Node node) {
         Deque<_Predicate> diff = new LinkedList<>();
         return diff;
     }
 
-    public Set<_Predicate> getPredicates(){
+    public Set<_Predicate> getPredicates() {
         return this.predicates;
     }
 

@@ -26,16 +26,17 @@ public class Move extends _Operator {
 
 
     public boolean check() {
-
         if (this.office.isAdjacent(this.nextOffice) &&
                 precondition.containsKey("Robot-Location(" + this.office.name + ")")) {
-            //&& this.office.listAdjacents().contains(this.nextOffice))
-
             return true;
         }
-
         return false;
     }
+
+    public boolean reverse_check(){
+        return check();
+    }
+
 
     public void add() {
         //this.precondition.add(RobotLocation);
@@ -66,12 +67,15 @@ public class Move extends _Operator {
         }
 
 
-        System.out.println("Move instance ");
+        // System.out.println("Move instance ");
         return result;
     }
 
     @Override
     public String toString() {
-        return "Move("+this.office.name+","+this.nextOffice.name+")";
+    //   return "Move("+this.office.name+","+this.nextOffice.name+")";
+        return "Move("+this.nextOffice.name+","+this.office.name+")";
     }
+
+
 }
