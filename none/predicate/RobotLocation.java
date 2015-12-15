@@ -16,4 +16,7 @@ public class RobotLocation extends _Predicate {
     public RobotLocation(Office o) {
         this.office = o;
     }
+
+
+
 }

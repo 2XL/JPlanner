@@ -171,7 +171,7 @@ public class Loader {
             }
         // retrieve adjacent list
         for (Office o : offices) {
-            adjacent.put(o.name, o.listAdjacent());
+            adjacent.put(o.name, o.listAdjacents());
         }
         return adjacent;
     }

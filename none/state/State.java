@@ -1,15 +1,15 @@
 package none.state;
 
+import none.building.Office;
 import none.config.Loader;
 import none.operator.CleanOffice;
+import none.operator.Move;
+import none.operator.Push;
 import none.operator._Operator;
 import none.predicate.*;
+import sun.awt.image.ImageWatched;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,14 +18,36 @@ import java.util.regex.Pattern;
  */
 public class State extends Node {
 
+    static HashMap<Integer, State> all_state;
+    Office location;
+    // _Operator operator; // the operation make to reach this state
+
+    public State(Office o, Set<_Predicate> lp, State parent, _Operator op) {
+        this.location = o; // robot location
+        super.predicates = lp;
+        super.parent = parent; // parent node
+        super.operator = op; // operation done
+    }
+
+
+    public boolean exist() {
+        return this.all_state.containsKey(this.hashCode());
+    }
+
+    public boolean flush() {
+        if (this.exist()) {
+            return false;
+        } else {
+            this.all_state.put(this.hashCode(), this);
+            return true;
+        }
+    }
 
 
     public State(List<String> config, Loader loader) {
-        predicates = new LinkedList<>();
+        predicates = new TreeSet<>();
 
         for (String pred : config) {
-
-
             String methodName = pred.substring(0, pred.indexOf('('));
             // String methodNameNormal = methodName.replaceAll("-", "_");
             Pattern pattern = Pattern.compile("\\((.*?)\\)");
@@ -39,7 +61,8 @@ public class State extends Node {
                         candPred = new BoxLocation(loader.getBox(methodArgs[0]), loader.getOffice(methodArgs[1]));
                         break;
                     case "robot-location": // o
-                        candPred = new RobotLocation(loader.getOffice(methodArgs[0]));
+                        this.location = loader.getOffice(methodArgs[0]);
+                        candPred = new RobotLocation(this.location); // im located at a certain office in the state
                         break;
                     case "empty": // o
                         candPred = new Empty(loader.getOffice(methodArgs[0]));
@@ -66,7 +89,8 @@ public class State extends Node {
 
     public List<String> getState() {
         List<String> state = new LinkedList<>();
-        for(_Predicate p : this.predicates){
+        for (Iterator<_Predicate> iterator = this.predicates.iterator(); iterator.hasNext(); ) {
+            _Predicate p = iterator.next();
             state.add(p.toString());
         }
         return state;
@@ -78,48 +102,89 @@ public class State extends Node {
         List<String> tempCurr = new ArrayList<>(this.getState());
         tempCurr.removeAll(goalState.getState()); // remove all those that match with the goal
         List<_Predicate> result = new LinkedList<>();
-        for(_Predicate p : this.predicates){
-            if(tempCurr.contains(p.toString())){
+        for (_Predicate p : this.predicates) {
+            if (tempCurr.contains(p.toString())) {
                 result.add(p);
             }
         }
         return result;
     }
 
-    public List<Node> expand(List<_Predicate> predicates){
-        List<Node> expansion = new LinkedList<>();
+    public List<State> expand(List<_Predicate> predicates) {
 
-        List<_Operator> ops;
-        RobotLocation robot;
-        // robot operation
 
-        // CleanOffice
-        if(predicates.contains(Dirty.class.getSimpleName()) || predicates.contains(Clean.class.getSimpleName())){
+        List<State> expansion = new LinkedList<>();
+        // els que calen arregar son els box location | clean | robot location
+        // sort de predicates by priority
+        Set<_Predicate> pred = new TreeSet<>();
+        for (_Predicate p : predicates) {
+            if (p.getOffice().equals(this.location))
+                pred.add(p);
+        }
+        // predicates to be considered
+        System.out.println(pred);
+        State s;
+        for (_Predicate p : pred) {
+            // only handle the states where im involved
+            String predicate = p.getClass().getSimpleName();
+            switch (predicate) {
+                case "Clean": // if there are no office to be cleaned then do nothing
+                    System.out.println("CleanOffice -> " + predicate);
+                    // si predicat es clean intentare embrutarho
+                    CleanOffice clean_office = new CleanOffice(p.getOffice(), this);
+                    s = clean_office.revert();
+                    if (s instanceof State) {
+                        System.out.println("Clean to expansion");
+                        expansion.add(s); // returns a list of candidate nodes
+                    }
+                    // add operation clean myself
+                    break;
+                case "BoxLocation": // if the box has to be moved ill move it even if its not within one step
+                    System.out.println("Push -> " + predicate);
+                    // move the box to all it is adjacent
+                    for (Office o : this.location.getAdjacents()) {
+                        Push push = new Push(p.getBox(), this.location, o, this);
+                        s = push.apply();
+                        if (s instanceof State) {
+                            System.out.println("Push to expansion");
+                            expansion.add(s); // returns a list of candidates nodes to be expanded or pushed to the queue
+                        }
+                    }
+                    // move my box to my adjacents
+                    break;
+            }
 
-            return expansion;
+            System.out.println(expansion);
+            // only add if it doesn't already exist
+            if (expansion.size() == 0) {
+                System.out.println("List State Empty");
+            }
         }
 
-
-        // Push
-        if(predicates.contains(Empty.class.getSimpleName()) || predicates.contains(BoxLocation.class.getSimpleName())){
-
-            return expansion;
+        if (expansion.size() == 0) { // try to move
+            System.out.println("N O O P!");
+            for (Office o : this.location.getAdjacents()) {
+                Move move = new Move(this.location, o, this);
+                s = move.apply();
+                if (s instanceof State) {
+                    System.out.println("Move to expansion");
+                    expansion.add(s);
+                }
+            }
         }
-
-        // Move
-        if(predicates.contains(RobotLocation.class.getSimpleName())){
-
-            return expansion;
-        }
-
-
-        // know the predicates that are pending to be achieved
-        // expand for each predicate
-
-        // know the operations that can be performed
-
+        System.out.println("RETURN");
+        System.out.println(expansion);
         return expansion;
     }
 
 
+    public Office getRobotLocation() {
+        return this.location;
+    }
+
+    @Override
+    public int hashCode() {
+        this.getState(); // sort the list
+        return this.getState().hashCode();
+    }
 }

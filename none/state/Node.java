@@ -1,5 +1,7 @@
 package none.state;
 
+import none.building.Office;
+import none.operator._Operator;
 import none.predicate._Predicate;
 
 import java.util.Deque;
@@ -13,25 +15,38 @@ import java.util.Set;
 public abstract class Node {
     Node parent;
     Set<Node> child;
-    List<_Predicate> predicates;
+    Set<_Predicate> predicates;
+    _Operator operator;
 
-
+    /*
     public boolean isSame(Node n){
         return true;
     }
+    */
 
-
-    public Deque<Node> getPlan(){
-        Deque<Node> deque = new LinkedList<>();
-        return deque;
+    public Deque<_Operator> getPlan(){
+        Deque<_Operator> plan = new LinkedList<>();
+        for(Node node : getTrace()){
+            plan.add(node.operator);
+        }
+        return  plan;
     }
 
+    public Deque<Node> getTrace(){
+        Deque<Node> deque = new LinkedList<>();
+        Node n = this;
+        do{
+            deque.add(n);
+            n = n.parent;
+        }while (n.parent != null);
+        return deque;
+    }
     public Deque<_Predicate> getDiff(Node node){
         Deque<_Predicate> diff = new LinkedList<>();
         return diff;
     }
 
-    public List<_Predicate> getPredicates(){
+    public Set<_Predicate> getPredicates(){
         return this.predicates;
     }
 

@@ -62,4 +62,9 @@ public class RunnerRestriction extends Runner{
         // do whatever to the predicate list
         // order deque by operation priority
     }
+    public static void main(String[] args){
+        RunnerRestriction run = new RunnerRestriction();
+        Loader loader = new Loader(0);
+        run.execute(loader);
+    }
 }

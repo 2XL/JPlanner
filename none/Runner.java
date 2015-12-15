@@ -1,6 +1,7 @@
 package none;
 
 import none.config.Loader;
+import none.operator._Operator;
 import none.state.Node;
 
 import java.util.Deque;
@@ -12,7 +13,7 @@ public abstract class Runner {
 
     Metrics metrics;
     Boolean planFound;
-    Deque<Node> plan; // ordered deck of queue // double ended list...
+    Deque<_Operator> plan; // ordered deck of queue // double ended list...
 
     public Runner() {
     }

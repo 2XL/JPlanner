@@ -8,7 +8,7 @@ import none.building.Office;
  */
 public class BoxLocation extends _Predicate{
 
-    Box box;
+
 
     @Override
     public String toString() {

@@ -1,8 +1,6 @@
 package none.building;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by x on 3/12/15.
@@ -21,8 +19,14 @@ public class Office{
     public void putAdjacent(Office o){
         adjacent_list.put(o.name, o);
     }
-    public Set<String> listAdjacent(){
+    public Set<String> listAdjacents(){
         return adjacent_list.keySet();
+    }
+    public Collection<Office> getAdjacents(){
+        return adjacent_list.values();
+    }
+    public boolean isAdjacent(Office o){
+        return adjacent_list.containsValue(o);
     }
 
 }
