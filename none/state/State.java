@@ -110,8 +110,22 @@ public class State extends Node {
         return result;
     }
 
-    public List<State> expand(List<_Predicate> predicates) {
+    public List<State> expand(){
+        // move to neighbors
+        List<State> expansion = new LinkedList<>();
 
+        for (Office o : this.location.getAdjacents()) {
+            Move move = new Move(this.location, o, this);
+            State s = move.apply();
+            if (s instanceof State) {
+                //System.out.println("Move to expansion");
+                expansion.add(s);
+            }
+        }
+        return expansion;
+    }
+
+    public List<State> expand(List<_Predicate> predicates) {
 
         List<State> expansion = new LinkedList<>();
         // els que calen arregar son els box location | clean | robot location
@@ -121,14 +135,17 @@ public class State extends Node {
             if (p.getOffice().equals(this.location))
                 pred.add(p);
         }
+        //System.out.println(predicates);
         // predicates to be considered
         //System.out.println(pred);
         State s;
+       //boolean toMove = true; // default always move
         for (_Predicate p : pred) {
             // only handle the states where im involved
             String predicate = p.getClass().getSimpleName();
             switch (predicate) {
                 case "Clean": // if there are no office to be cleaned then do nothing
+                    //toMove = false;
                     //System.out.println("CleanOffice -> " + predicate);
                     // si predicat es clean intentare embrutarho
                     CleanOffice clean_office = new CleanOffice(p.getOffice(), this);
@@ -152,15 +169,43 @@ public class State extends Node {
                     }
                     // move my box to my adjacents
                     break;
+                case "Empty": // if there is empty
+                    // toMove = true;
+                    // noop
+                    break;
+                default:
+                    // robot location
+                    break;
             }
 
             //System.out.println(expansion);
             // only add if it doesn't already exist
+            /*
             if (expansion.size() == 0) {
-                //System.out.println("List State Empty");
+                System.out.println("List State Empty");
+            }
+            */
+        }
+        /*
+        if (expansion.size() == 0) { // try to move
+            System.out.println("N O O P!"); // NO OPERATION
+        }
+        */
+        /*
+        if (toMove) { // if there was no clean always move
+            //
+            for (Office o : this.location.getAdjacents()) {
+                Move move = new Move(this.location, o, this);
+                s = move.apply();
+                if (s instanceof State) {
+                    //System.out.println("Move to expansion");
+                    expansion.add(s);
+                }
             }
         }
-
+        */
+        // be naive always move
+        /*
         if (expansion.size() == 0) { // try to move
             //System.out.println("N O O P!");
             for (Office o : this.location.getAdjacents()) {
@@ -172,10 +217,12 @@ public class State extends Node {
                 }
             }
         }
+        */
         //System.out.println("RETURN");
         //System.out.println(expansion);
         return expansion;
     }
+
 
 
     public Office getRobotLocation() {
