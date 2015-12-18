@@ -7,7 +7,6 @@ import none.operator.Move;
 import none.operator.Push;
 import none.operator._Operator;
 import none.predicate.*;
-import sun.awt.image.ImageWatched;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -18,12 +17,20 @@ import java.util.regex.Pattern;
  */
 public class State extends Node {
 
+    public static int bestMatch = Integer.MAX_VALUE;
+    public static int loopMatch = 0;
+    public static int skipMatch = 0;
+    public static int stateCounter = 0;
     static HashMap<Integer, State> all_state;
     Office location;
     // _Operator operator; // the operation make to reach this state
 
 
-    public State(State s){
+    public State() {
+
+    }
+
+    public State(State s) {
         this.location = s.location;
         super.predicates = new HashSet<>(s.predicates);
         super.parent = s.parent;
@@ -82,12 +89,6 @@ public class State extends Node {
                     case "clean": // o
                         candPred = new Clean(loader.getOffice(methodArgs[0]));
                         break;
-                    /*
-                    // Static to each office.
-                    case "adjacent": // o1, o2
-                        candPred = new Adjacent(loader.getOffice(methodArgs[0]), loader.getOffice(methodArgs[1]));
-                        break;
-                        */
                     default:
                         break;
                 }
@@ -116,39 +117,124 @@ public class State extends Node {
                 result.add(p);
             }
         }
+        if (this.bestMatch > result.size()) {
+            this.bestMatch = result.size();
+        }
         return result;
     }
 
     public List<State> expand() {
         // move to neighbors
         List<State> expansion = new LinkedList<>();
-
         for (Office o : this.location.getAdjacents()) {
             Move move = new Move(this.location, o, this);
             State s = move.apply();
             if (s instanceof State) {
-                //System.out.println("Move to expansion");
                 expansion.add(s);
             }
         }
         return expansion;
     }
 
-    public List<State> expand(List<_Predicate> predicates) {
+    public State expand(State goalState, HashSet<State> history, Deque<State> currentDeque) {
+        //System.out.println("@@@" + this.getState() + " --> " + this.operator);
+        //System.out.println("$$$" + goalState.getState() + " <-- ");
+        //System.out.println("???" + goalState.compareSetup(this) + " ...");
+        boolean found = false;
+        List<_Predicate> diff_predicate = this.compareSetup(goalState); //
+        // list of predicates taht doesn't match
 
+        // get current state robot location
+        List<_Operator> ops = new LinkedList<>(); // candidate operators
+
+        // generate candidate operations
+        for (_Predicate p : this.getPredicates()) {
+            if (p.getOffice() == this.location) {
+                //these are candidate operators that can be satisfied
+                //System.out.println(">>>" + p.toString());
+            } else {
+                continue;
+            }
+            switch (p.getClass().getSimpleName()) {
+                case "BoxLocation": // ok
+                    // push my my box to neighbor location
+                    for (Office o : this.location.getAdjacents()) {
+                        ops.add(new Push(p.getBox(), o, p.getOffice(), this));
+                    }
+                    break;
+                case "RobotLocation":
+                    for (Office o : this.location.getAdjacents()) {
+                        ops.add(new Move(o, p.getOffice(), this));
+                    }
+                    break;
+                case "Clean":
+                    ops.add(new CleanOffice(p.getOffice(), this));
+                    break;
+                case "Dirty":
+                    // there is no operation to make the room dirty
+                    break;
+                case "Empty":
+                    //
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        //System.out.println(ops);
+
+        // generate candidate states
+        List<State> states = new LinkedList<>();
+        for (_Operator op : ops) {
+            //System.out.println(op.toString());
+            State s = op.reverse();
+            if (s == null) {
+                // no instance
+                this.skipMatch++;
+                //System.out.println("+++[" + op.toString() + "] \t+++ NULL");
+            } else {
+                states.add(s);
+            }
+        }
+
+        // System.out.println();
+
+        for (State s : states) {
+            if (s instanceof State) { // is not null
+                // if is loop
+                if (history.add(s)) {
+                    currentDeque.add(s);
+                    int diff = s.compareSetup(goalState).size();
+                    if (diff == 0) {
+                        found = true;
+                        return s;
+                    }
+                    // can add
+                    this.stateCounter++;
+                    //System.out.println("+++[" + s.operator.toString() + "] \t+++ ACK");
+                } else {
+                    // repeated
+                    this.loopMatch++;
+                    //System.out.println("+++[" + s.operator.toString() + "] \t+++ LOOP");
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public List<State> expand(List<_Predicate> predicates) {
         List<State> expansion = new LinkedList<>();
-        // els que calen arregar son els box location | clean | robot location
-        // sort de predicates by priority
         Set<_Predicate> pred = new TreeSet<>();
         for (_Predicate p : predicates) {
             if (p.getOffice().equals(this.location))
                 pred.add(p);
         }
         //System.out.println(predicates);
-        // predicates to be considered
         //System.out.println(pred);
         State s;
-        //boolean toMove = true; // default always move
+        Boolean hasMoved = false;
         for (_Predicate p : pred) {
             // only handle the states where im involved
             String predicate = p.getClass().getSimpleName();
@@ -158,7 +244,7 @@ public class State extends Node {
                     //System.out.println("CleanOffice -> " + predicate);
                     // si predicat es clean intentare embrutarho
                     CleanOffice clean_office = new CleanOffice(p.getOffice(), this);
-                    s = clean_office.revert();
+                    s = clean_office.reverse();
                     if (s instanceof State) {
                         //System.out.println("Clean to expansion");
                         expansion.add(s); // returns a list of candidate nodes
@@ -166,10 +252,7 @@ public class State extends Node {
                     // add operation clean myself
                     if (expansion.size() == 0) {
                         _Predicate pred_box = null;
-                        //System.out.println(this.predicates);
-                        // lookup for the predicate that has box at this location
                         for (_Predicate p_box : this.predicates) {
-                            //System.out.print(p_box.toString());
                             if (p_box.getOffice().name == this.location.name && p_box.getBox().equals(null)) {
                                 continue;
                             } else {
@@ -187,13 +270,8 @@ public class State extends Node {
                                 expansion.add(s); // returns a list of candidates nodes to be expanded or pushed to the queue
                             }
                         }
-
-
                     }
-
-
                     break;
-
                 case "BoxLocation": // if the box has to be moved ill move it even if its not within one step
                     //System.out.println("Push -> " + predicate);
                     // move the box to all it is adjacent
@@ -205,62 +283,20 @@ public class State extends Node {
                             expansion.add(s); // returns a list of candidates nodes to be expanded or pushed to the queue
                         }
                     }
-                    // move my box to my adjacents
                     break;
-                case "Empty": // if there is empty
-                    // toMove = true;
-                    // noop
+                case "Empty":
                     break;
                 default:
                     // robot location
                     break;
             }
-
-            //System.out.println(expansion);
-            // only add if it doesn't already exist
-            /*
-            if (expansion.size() == 0) {
-                System.out.println("List State Empty");
-            }
-            */
         }
-        /*
-        if (expansion.size() == 0) { // try to move
-            System.out.println("N O O P!"); // NO OPERATION
-        }
-        */
-        /*
-        if (toMove) { // if there was no clean always move
-            //
-            for (Office o : this.location.getAdjacents()) {
-                Move move = new Move(this.location, o, this);
-                s = move.apply();
-                if (s instanceof State) {
-                    //System.out.println("Move to expansion");
-                    expansion.add(s);
-                }
-            }
-        }
-        */
-        // be naive always move
-        /*
         if (expansion.size() == 0) { // try to move
             //System.out.println("N O O P!");
-            for (Office o : this.location.getAdjacents()) {
-                Move move = new Move(this.location, o, this);
-                s = move.apply();
-                if (s instanceof State) {
-                    //System.out.println("Move to expansion");
-                    expansion.add(s);
-                }
-            }
+            // expansion.addAll(this.expand());
         }
-        */
-        //System.out.println("RETURN");
-        //System.out.println(expansion);
         return expansion;
     }
-
 
     public Office getRobotLocation() {
         return this.location;
@@ -268,7 +304,13 @@ public class State extends Node {
 
     @Override
     public int hashCode() {
-        this.getState(); // sort the list
+        // this.getState(); // sort the list
         return this.getState().hashCode();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.hashCode() == obj.hashCode();
+    }
+
 }

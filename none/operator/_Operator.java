@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Created by j on 12/12/2015.
  */
-public abstract class _Operator{
+public abstract class _Operator implements _OperatorAction{
      Map<String, _Predicate> precondition;
      //int priority;
 

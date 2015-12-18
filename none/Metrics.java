@@ -1,9 +1,6 @@
 package none;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by j on 12/12/2015.
@@ -47,4 +44,13 @@ public class Metrics {
         this.startTime = System.currentTimeMillis();
     }
 
+    @Override
+    public String toString() {
+
+        String result = "";
+        for(Long key: this.tracker.keySet()){
+            result += key +" \t" + this.tracker.get(key);
+        }
+        return result;
+    }
 }

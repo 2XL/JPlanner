@@ -33,8 +33,15 @@ public class Move extends _Operator {
         return false;
     }
 
-    public boolean reverse_check(){
-        return check();
+    public boolean reverse_check() {
+        if (isUndo())
+            return false;
+
+        if (this.nextOffice.isAdjacent(this.office) &&
+                precondition.containsKey("Robot-Location(" + this.nextOffice.name + ")")) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -47,6 +54,54 @@ public class Move extends _Operator {
     public void remove() {
         //this.precondition.remove(RobotLocation);
         this.precondition.remove("Robot-Location(" + this.office.name + ")");
+    }
+
+    public void reverse_add() {
+        //this.precondition.add(RobotLocation);
+        _Predicate p = new RobotLocation(this.office);
+        this.precondition.put(p.toString(), p);
+    }
+
+    public void reverse_remove() {
+        //this.precondition.remove(RobotLocation);
+        this.precondition.remove("Robot-Location(" + this.nextOffice.name + ")");
+    }
+
+
+    public State reverse() {
+        State result = null;
+
+
+
+        if (!this.reverse_check()) {
+
+            // none possible
+        } else {
+            this.reverse_add();
+            this.reverse_remove();
+            result = new State(
+                    this.office,
+                    new TreeSet<_Predicate>(this.precondition.values()),
+                    this.parent,
+                    this);
+        }
+        return result;
+    }
+
+    public boolean isUndo() {
+        // its undo only if the previous
+        _Operator op = this.parent.getOperator();
+        if (op instanceof Move) {
+            //
+            if ((((Move) op).nextOffice) == this.office) {
+                if (((Move) op).office == this.nextOffice) {
+                    return true;
+                }
+            }
+
+        }
+
+        return false;
     }
 
     public State apply() {
@@ -73,8 +128,8 @@ public class Move extends _Operator {
 
     @Override
     public String toString() {
-    //   return "Move("+this.office.name+","+this.nextOffice.name+")";
-        return "Move("+this.nextOffice.name+","+this.office.name+")";
+        return "Move(" + this.office.name + "," + this.nextOffice.name + ")";
+        //    return "Move("+this.nextOffice.name+","+this.office.name+")";
     }
 
 
