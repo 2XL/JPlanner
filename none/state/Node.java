@@ -29,6 +29,7 @@ public abstract class Node {
         for (Node node : getTrace()) {
             plan.add(node.operator);
         }
+        System.out.println("ObtainedPlanSize: "+plan.size());
         return plan;
     }
 
@@ -43,6 +44,7 @@ public abstract class Node {
             deque.add(n);
             n = n.parent;
         } while (n.parent != null);
+        System.out.println("DequeSize: "+deque.size());
         return deque;
     }
 

@@ -30,14 +30,19 @@ public class Push extends _Operator {
 
     public boolean check() {
 
-        if (this.office.isAdjacent(this.nextOffice) &&
-                this.precondition.containsKey("Robot-Location(" + this.office.name + ")") &&
-                this.precondition.containsKey("Box-Location("+this.box.name +","+ this.office.name + ")") &&
-                this.precondition.containsKey("Empty("+this.nextOffice.name+")")) {
-            //&& this.office.listAdjacents().contains(this.nextOffice))
-            return true;
-        }
+        try {
+            if (this.office.isAdjacent(this.nextOffice) &&
+                    this.precondition.containsKey("Robot-Location(" + this.office.name + ")") &&
+                    this.precondition.containsKey("Box-Location(" + this.box.name + "," + this.office.name + ")") &&
+                    this.precondition.containsKey("Empty(" + this.nextOffice.name + ")")) {
+                //&& this.office.listAdjacents().contains(this.nextOffice))
+                return true;
+            }
+        }catch (NullPointerException e){
 
+            System.out.print(e.getMessage());
+
+        }
         return false;
     }
 

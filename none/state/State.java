@@ -22,6 +22,15 @@ public class State extends Node {
     Office location;
     // _Operator operator; // the operation make to reach this state
 
+
+    public State(State s){
+        this.location = s.location;
+        super.predicates = new HashSet<>(s.predicates);
+        super.parent = s.parent;
+        super.operator = s.operator;
+    }
+
+
     public State(Office o, Set<_Predicate> lp, State parent, _Operator op) {
         this.location = o; // robot location
         super.predicates = lp;
@@ -110,7 +119,7 @@ public class State extends Node {
         return result;
     }
 
-    public List<State> expand(){
+    public List<State> expand() {
         // move to neighbors
         List<State> expansion = new LinkedList<>();
 
@@ -139,7 +148,7 @@ public class State extends Node {
         // predicates to be considered
         //System.out.println(pred);
         State s;
-       //boolean toMove = true; // default always move
+        //boolean toMove = true; // default always move
         for (_Predicate p : pred) {
             // only handle the states where im involved
             String predicate = p.getClass().getSimpleName();
@@ -155,7 +164,36 @@ public class State extends Node {
                         expansion.add(s); // returns a list of candidate nodes
                     }
                     // add operation clean myself
+                    if (expansion.size() == 0) {
+                        _Predicate pred_box = null;
+                        //System.out.println(this.predicates);
+                        // lookup for the predicate that has box at this location
+                        for (_Predicate p_box : this.predicates) {
+                            //System.out.print(p_box.toString());
+                            if (p_box.getOffice().name == this.location.name && p_box.getBox().equals(null)) {
+                                continue;
+                            } else {
+                                pred_box = p_box;
+                                break;
+                            }
+                        }
+
+                        // there is a box on this office
+                        for (Office o : this.location.getAdjacents()) {
+                            Push push = new Push(pred_box.getBox(), this.location, o, this);
+                            s = push.apply();
+                            if (s instanceof State) {
+                                //System.out.println("Push to expansion");
+                                expansion.add(s); // returns a list of candidates nodes to be expanded or pushed to the queue
+                            }
+                        }
+
+
+                    }
+
+
                     break;
+
                 case "BoxLocation": // if the box has to be moved ill move it even if its not within one step
                     //System.out.println("Push -> " + predicate);
                     // move the box to all it is adjacent
@@ -222,7 +260,6 @@ public class State extends Node {
         //System.out.println(expansion);
         return expansion;
     }
-
 
 
     public Office getRobotLocation() {

@@ -3,7 +3,6 @@ package none;
 import none.config.Loader;
 import none.operator._Operator;
 import none.predicate._Predicate;
-import none.state.Node;
 import none.state.State;
 
 import java.util.*;
@@ -15,7 +14,7 @@ public class RunnerRegression extends Runner {
 
     public static void main(String[] args) {
         RunnerRegression run = new RunnerRegression();
-        Loader loader = new Loader(8);
+        Loader loader = new Loader(0);
         run.execute(loader);
     }
 
@@ -39,9 +38,6 @@ public class RunnerRegression extends Runner {
 
         State initState = new State(config.getInitialState(), config);
         State goalState = new State(config.getGoalState(), config);
-
-//        State initState = new State(config.getGoalState(), config);
-//        State goalState = new State(config.getInitialState(), config);
 
         System.out.println("InitialState: \t");
         System.out.println(config.getInitialState());
@@ -70,7 +66,7 @@ public class RunnerRegression extends Runner {
             // System.out.println("DIFF: "+p); // get list of predicates that doesn't match, this has to be resolved by operators
             List<State> candidates = n.expand(p); // expandir nodo pendiente de explorar en anchura
             if (candidates.size() == 0)
-                candidates = n.expand();
+                candidates = n.expand(); // move
             // System.out.println("CAND: "+candidates);
             // for each candidate configuration state
             for (State candState : candidates) {
@@ -120,7 +116,6 @@ public class RunnerRegression extends Runner {
                     residualMapDeque.put(depth, new HashMap<>());
                     residualDeque = residualMapDeque.get(depth);
                 }
-
                 //
                 this.metrics.keepTrack("Depth: " + depth);
                 System.out.println("Closest: " + this.closest + "    \tDepth: " + this.depth + " \tExpand: " + expansionDeque.size() + " ");
@@ -133,39 +128,44 @@ public class RunnerRegression extends Runner {
                 this.closest = Integer.MAX_VALUE;
                 // apply move operation
                 Deque<State> st = null;
+                Boolean lookupRevert = true;
                 do {
-                    // there is something to be fixed here.
-                    if(residualMapDeque.containsKey(depthRevert)) {
-                        if(residualMapDeque.get(depthRevert).size() == 0) {
-                            st = new LinkedList<>(residualMapDeque.remove(this.depthRevert).values()); // get the lowest index
+
+                    try {
+                        // its a remove once operation
+                        st = new LinkedList<>(residualMapDeque.remove(this.depthRevert).values()); // get the lowest index
+                        if (st.size() != 0) {
+                            lookupRevert = false;
                         }
+                    } catch (NullPointerException e) {
+                        // System.out.println(e.getMessage());
+                    } finally {
+                        depthRevert++;
                     }
-                    depthRevert++;
-                } while (st == null);
-                System.out.println("REVERT   dep     " + this.depthRevert);
-                System.out.println("REVERT   res     " + st.size());
+                    // i am removing the list
+                } while (lookupRevert);
+                //System.out.println("REVERT   dep     " + this.depthRevert);
+                //System.out.println("REVERT   res     " + st.size());
 
                 depth = depthRevert; // tornar al depth, pero el depth pot no correspondre
-                if(residualMapDeque.containsKey(depth)){
+                if (residualMapDeque.containsKey(depth)) {
                     residualDeque = residualMapDeque.get(depth); // switch the residual deque pointer to current deck
-                }else{
+                } else {
                     residualDeque = new HashMap<>();
                 }
                 Map map = new HashMap<String, State>();
                 for (State s : st) {
+                    State residualState = new State(s);
                     // State s = st.getLast();
-                    for(State state : s.expand())
+                    for (State state : residualState.expand())
                         map.put(state.toString(), state);
                 }
                 expansionDeque.addAll(new LinkedList<>(map.values()));
-
-                System.out.println("REVERT   exp     " + expansionDeque.size());
-
+                //System.out.println("REVERT   exp     " + expansionDeque.size());
                 //expansionDeque.add(s);
+                System.out.println("");
             }
-
         } // fi mientras
-
         this.metrics.keepTrack("Exit Loop... " + this.planFound);
         if (this.planFound) {
             System.out.println("\nSOLUTION: \n");
@@ -178,7 +178,6 @@ public class RunnerRegression extends Runner {
         } else { // plan impossible to find
             System.out.println("There is no way to find the plan");
         }
-
 
         System.out.println("Runner Regression Runner");
         System.out.println("Elapsed time: " + this.metrics.getElapsed());
