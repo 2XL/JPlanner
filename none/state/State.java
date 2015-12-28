@@ -138,7 +138,8 @@ public class State extends Node {
 
     public State expand(State goalState, HashSet<State> history, Deque<State> currentDeque) {
         //System.out.println("@@@" + this.getState() + " --> " + this.operator);
-        //System.out.println("$$$" + goalState.getState() + " <-- ");
+        //System.out.println("@@@ --> " + this.getPlan() + " :: ");
+        //System.out.println("$$$" + this.getState() + " <-- ");
         //System.out.println("???" + goalState.compareSetup(this) + " ...");
         boolean found = false;
         List<_Predicate> diff_predicate = this.compareSetup(goalState); //
@@ -175,36 +176,38 @@ public class State extends Node {
                     break;
                 case "Empty":
                     //
+
                     break;
                 default:
                     break;
             }
 
         }
-
-        //System.out.println(ops);
-
+        // print current iteration new operation candidates
+        // System.out.println(ops);
         // generate candidate states
         List<State> states = new LinkedList<>();
+
+
         for (_Operator op : ops) {
             //System.out.println(op.toString());
             State s = op.reverse();
             if (s == null) {
                 // no instance
                 this.skipMatch++;
-                //System.out.println("+++[" + op.toString() + "] \t+++ NULL");
+                // System.out.println("---[" + op.toString() + "] \t+++ NULL"); // no aplicable
             } else {
                 states.add(s);
             }
         }
 
-        // System.out.println();
-
+        // check if the state exists
         for (State s : states) {
             if (s instanceof State) { // is not null
                 // if is loop
                 if (history.add(s)) {
                     currentDeque.add(s);
+                    // System.out.println(((State) s).operator.toString()); // print the operation that is not skipped
                     int diff = s.compareSetup(goalState).size();
                     if (diff == 0) {
                         found = true;
@@ -212,15 +215,15 @@ public class State extends Node {
                     }
                     // can add
                     this.stateCounter++;
-                    //System.out.println("+++[" + s.operator.toString() + "] \t+++ ACK");
+                    //System.out.println("+++[" + s.operator.toString() + "]     \t+++ ACK");
                 } else {
                     // repeated
                     this.loopMatch++;
-                    //System.out.println("+++[" + s.operator.toString() + "] \t+++ LOOP");
+                    //System.out.println("---[" + s.operator.toString() + "] \t+++ LOOP");
                 }
             }
         }
-
+        // end expanding
         return null;
     }
 
@@ -310,7 +313,9 @@ public class State extends Node {
 
     @Override
     public boolean equals(Object obj) {
-        return this.hashCode() == obj.hashCode();
+        boolean b;
+        b = this.hashCode() == ((State)obj).hashCode();
+        return b;
     }
 
 }
