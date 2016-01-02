@@ -14,6 +14,8 @@ import java.util.Set;
  */
 public abstract class Node {
     Node parent;
+    int depth; // only root has depth 0;
+    int distance;
     Set<Node> child;
     Set<_Predicate> predicates;
     _Operator operator;
@@ -61,5 +63,11 @@ public abstract class Node {
         return this.predicates;
     }
 
+    public int getDistance(){
+        return this.distance;
+    }
+    public int getDepth(){
+        return this.depth;
+    }
 
 }

@@ -28,7 +28,7 @@ public class Main {
         List: collection that contains ordered elements
          */
         // planners.put(RunnerLinear.class.getSimpleName(), new RunnerLinear());
-        planners.put(RunnerRegression.class.getSimpleName(), new RunnerRegression());
+        planners.put(RunnerDepthFirst.class.getSimpleName(), new RunnerDepthFirst());
         planners.put(RunnerRestriction.class.getSimpleName(), new RunnerRestriction());
 
         Loader configuration = new Loader(0);
