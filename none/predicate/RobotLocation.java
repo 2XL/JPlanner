@@ -7,7 +7,6 @@ import none.building.Office;
  */
 public class RobotLocation extends _Predicate {
 
-
     @Override
     public String toString() {
         return "Robot-Location("+office.name+")";
@@ -16,7 +15,5 @@ public class RobotLocation extends _Predicate {
     public RobotLocation(Office o) {
         this.office = o;
     }
-
-
 
 }

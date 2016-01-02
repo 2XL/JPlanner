@@ -9,7 +9,6 @@ public class Dirty extends _Predicate{
 
     @Override
     public String toString() {
-
         return "Dirty("+office.name+")";
     }
 

@@ -21,7 +21,6 @@ public class Move extends _Operator {
         this.office = o1;
         this.nextOffice = o2;
         this.parent = parent;
-
     }
 
 
@@ -43,7 +42,6 @@ public class Move extends _Operator {
         }
         return false;
     }
-
 
     public void add() {
         //this.precondition.add(RobotLocation);
@@ -67,14 +65,10 @@ public class Move extends _Operator {
         this.precondition.remove("Robot-Location(" + this.nextOffice.name + ")");
     }
 
-
     public State reverse() {
         State result = null;
 
-
-
         if (!this.reverse_check()) {
-
             // none possible
         } else {
             this.reverse_add();
@@ -101,13 +95,8 @@ public class Move extends _Operator {
         return false;
     }
 
-
-
     public State apply() {
-
         State result = null;
-
-
         if (!this.check()) {
             // none possible
         } else {
@@ -119,8 +108,6 @@ public class Move extends _Operator {
                     this.parent,
                     this);
         }
-
-
         // System.out.println("Move instance ");
         return result;
     }
@@ -130,6 +117,4 @@ public class Move extends _Operator {
         return "Move(" + this.office.name + "," + this.nextOffice.name + ")";
         //    return "Move("+this.nextOffice.name+","+this.office.name+")";
     }
-
-
 }

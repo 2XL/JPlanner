@@ -24,9 +24,6 @@ public abstract class _Predicate implements Comparable{
         return box;
     }
 
-
-
-    // per tenir un hash map consistent s'ha de tenir els _Predicats ordenats
     @Override
     public int compareTo(Object o) {
         return this.toString().compareTo(o.toString());

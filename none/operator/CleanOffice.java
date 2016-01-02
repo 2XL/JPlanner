@@ -26,8 +26,6 @@ public class CleanOffice extends _Operator {
 
     }
 
-
-
     public boolean reverse_check(){
         if(isUndo())
             return false;
@@ -53,7 +51,6 @@ public class CleanOffice extends _Operator {
     public void reverse_remove(){
         this.precondition.remove("Clean("+this.office.name+")");
     }
-
 
     public boolean check() {
         if (precondition.containsKey("Robot-Location(" + this.office.name + ")") &&
@@ -109,21 +106,6 @@ public class CleanOffice extends _Operator {
         return result;
     }
 
-    /*
-    public State reverse(){
-        // reverse stat path
-        State result = null;
-        if(reverse_check()){
-            this.reverse_add();
-            this.reverse_remove();
-            result = new State(this.office, new TreeSet<>(this.precondition.values()),
-            this.parent,
-            this);
-        }
-        // System.out.println("DirtyOffice instance");
-        return result;
-    }
-    */
     @Override
     public String toString() {
         return "CleanOffice("+this.office.name+")";

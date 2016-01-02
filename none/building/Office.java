@@ -7,7 +7,6 @@ import java.util.*;
  */
 public class Office{
 
-    Map<String, Box> box_list;
     Map<String, Office> adjacent_list;  // static
     public String name; // static
 

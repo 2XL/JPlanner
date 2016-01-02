@@ -21,7 +21,6 @@ public class State extends Node {
     public static int loopMatch = 0;
     public static int skipMatch = 0;
     public static int stateCounter = 0;
-    static HashMap<Integer, State> all_state;
     Office location;
     // _Operator operator; // the operation make to reach this state
 
@@ -46,21 +45,6 @@ public class State extends Node {
         super.parent = parent; // parent node
         super.operator = op; // operation done
     }
-
-
-    public boolean exist() {
-        return this.all_state.containsKey(this.hashCode());
-    }
-
-    public boolean flush() {
-        if (this.exist()) {
-            return false;
-        } else {
-            this.all_state.put(this.hashCode(), this);
-            return true;
-        }
-    }
-
 
     public State(List<String> config, Loader loader) {
         this.depth = 0; // am the root!
@@ -142,22 +126,11 @@ public class State extends Node {
     }
 
     public State expand(State goalState, HashSet<State> history, Deque<State> currentDeque, Deque<State> planDeque) {
-        //System.out.println("@@@" + this.getState() + " --> " + this.operator);
-        //System.out.println("@@@ --> " + this.getPlan() + " :: ");
-        //System.out.println("$$$" + this.getState() + " <-- ");
-        //System.out.println("???" + goalState.compareSetup(this) + " ...");
-        // boolean found = false;
-        // List<_Predicate> diff_predicate = this.compareSetup(goalState); //
-        // list of predicates taht doesn't match
-
-        // get current state robot location
         List<_Operator> ops = new LinkedList<>(); // candidate operators
 
         // generate candidate operations
         for (_Predicate p : this.getPredicates()) {
             if (p.getOffice() == this.location) {
-                //these are candidate operators that can be satisfied
-                //System.out.println(">>>" + p.toString());
             } else {
                 continue;
             }
@@ -181,26 +154,19 @@ public class State extends Node {
                     break;
                 case "Empty":
                     //
-
                     break;
                 default:
                     break;
             }
 
         }
-        // print current iteration new operation candidates
-        // System.out.println(ops);
-        // generate candidate states
         List<State> states = new LinkedList<>();
 
-
         for (_Operator op : ops) {
-            //System.out.println(op.toString());
             State s = op.reverse();
             if (s == null) {
                 // no instance
                 this.skipMatch++;
-                // System.out.println("---[" + op.toString() + "] \t+++ NULL"); // no aplicable
             } else {
                 states.add(s);
             }
@@ -211,35 +177,24 @@ public class State extends Node {
             if (s instanceof State) { // is not null
                 // if is loop
                 if (history.add(s)) {
-
                     s.compareSetup(goalState);
-
-                    if(planDeque.size() != 0){
-                        State plan  = planDeque.getLast(); // if plan exists
-                        if((plan).depth <= (s).depth + (s).distance){ // deth + distance?
-                          // this.depthOverextend
-
+                    if (planDeque.size() != 0) {
+                        State plan = planDeque.getLast(); // if plan exists
+                        if ((plan).depth <= (s).depth + (s).distance) { // deth + distance?
+                            // this.depthOverextend
                             continue;
                         }
                     }
-
                     currentDeque.add(s);
-                    // System.out.println(((State) s).operator.toString()); // print the operation that is not skipped
-
-
                     if ((s).distance == 0) {
                         planDeque.add(s); // this plan can reach the goal
                         System.out.println(((State) s).depth);
-                        // found = true;
-                        //return s;
                     }
                     // can add
                     this.stateCounter++;
-                    //System.out.println("+++[" + s.operator.toString() + "]     \t+++ ACK");
                 } else {
                     // repeated
                     this.loopMatch++;
-                    //System.out.println("---[" + s.operator.toString() + "] \t+++ LOOP");
                 }
             }
         }
@@ -254,25 +209,16 @@ public class State extends Node {
             if (p.getOffice().equals(this.location))
                 pred.add(p);
         }
-        //System.out.println(predicates);
-        //System.out.println(pred);
         State s;
-        Boolean hasMoved = false;
         for (_Predicate p : pred) {
-            // only handle the states where im involved
             String predicate = p.getClass().getSimpleName();
             switch (predicate) {
                 case "Clean": // if there are no office to be cleaned then do nothing
-                    //toMove = false;
-                    //System.out.println("CleanOffice -> " + predicate);
-                    // si predicat es clean intentare embrutarho
                     CleanOffice clean_office = new CleanOffice(p.getOffice(), this);
                     s = clean_office.reverse();
                     if (s instanceof State) {
-                        //System.out.println("Clean to expansion");
                         expansion.add(s); // returns a list of candidate nodes
                     }
-                    // add operation clean myself
                     if (expansion.size() == 0) {
                         _Predicate pred_box = null;
                         for (_Predicate p_box : this.predicates) {
@@ -283,26 +229,20 @@ public class State extends Node {
                                 break;
                             }
                         }
-
-                        // there is a box on this office
                         for (Office o : this.location.getAdjacents()) {
                             Push push = new Push(pred_box.getBox(), this.location, o, this);
                             s = push.apply();
                             if (s instanceof State) {
-                                //System.out.println("Push to expansion");
                                 expansion.add(s); // returns a list of candidates nodes to be expanded or pushed to the queue
                             }
                         }
                     }
                     break;
                 case "BoxLocation": // if the box has to be moved ill move it even if its not within one step
-                    //System.out.println("Push -> " + predicate);
-                    // move the box to all it is adjacent
                     for (Office o : this.location.getAdjacents()) {
                         Push push = new Push(p.getBox(), this.location, o, this);
                         s = push.apply();
                         if (s instanceof State) {
-                            //System.out.println("Push to expansion");
                             expansion.add(s); // returns a list of candidates nodes to be expanded or pushed to the queue
                         }
                     }
@@ -310,31 +250,21 @@ public class State extends Node {
                 case "Empty":
                     break;
                 default:
-                    // robot location
                     break;
             }
-        }
-        if (expansion.size() == 0) { // try to move
-            //System.out.println("N O O P!");
-            // expansion.addAll(this.expand());
         }
         return expansion;
     }
 
-    public Office getRobotLocation() {
-        return this.location;
-    }
-
     @Override
     public int hashCode() {
-        // this.getState(); // sort the list
         return this.getState().hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
         boolean b;
-        b = this.hashCode() == ((State)obj).hashCode();
+        b = this.hashCode() == ((State) obj).hashCode();
         return b;
     }
 

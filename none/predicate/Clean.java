@@ -9,12 +9,10 @@ public class Clean extends _Predicate {
 
     @Override
     public String toString() {
-
         return "Clean(" + office.name + ")";
     }
 
     public Clean(Office o) {
-
         this.office = o;
     }
 }
