@@ -9,7 +9,7 @@ public class Metrics {
 
     long startTime;
 
-    Map<Long, String> tracker = new HashMap<>();
+    Deque<String> tracker = new LinkedList<>();
 
     /**
      * Instance the invocation time of the metric collector
@@ -23,17 +23,9 @@ public class Metrics {
      * @param note
      */
     public void keepTrack(String note) {
-        tracker.put(System.currentTimeMillis() - this.startTime, note);
-    }
 
-    /**
-     *
-     * @return
-     */
-    public Collection getTracker(){
-        return this.tracker.values();
+        tracker.add(System.currentTimeMillis() - this.startTime +"   \t:  "+ note);
     }
-
 
     public long getElapsed(){
         return System.currentTimeMillis() - this.startTime;
@@ -48,8 +40,8 @@ public class Metrics {
     public String toString() {
 
         String result = "";
-        for(Long key: this.tracker.keySet()){
-            result += "\ntime: ["+key +"] \t - " + this.tracker.get(key);
+        for(String note: this.tracker){
+            result += "\n::> ["+note +"]";
         }
         return result;
     }

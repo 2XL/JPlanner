@@ -16,7 +16,7 @@ public class RunnerBestFirst extends Runner {
     int depth = 0;
     int depthLimit = 10000;
     static String output_path = "src/none/config/solution/";
-    static String output = output_path + "output_" + level + ".log";
+    static String output;
 
     public RunnerBestFirst() {
         super();
@@ -25,18 +25,37 @@ public class RunnerBestFirst extends Runner {
 
     public static void main(String[] args) throws IOException {
         RunnerBestFirst run = new RunnerBestFirst();
+        InputStreamReader ISR = new InputStreamReader(System.in);
+        BufferedReader BR = new BufferedReader(ISR);
+        System.out.println("Choose a level [1-10]");
+        String userInput = BR.readLine(); //program waits here until the user inserts a line of text
+        while (true) {
+            try {
+                if (Integer.parseInt(userInput) >= 0 && Integer.parseInt(userInput) <= 10)
+                    break;
+            }catch (NumberFormatException ex){
+             // wrong option
+            }
+            System.out.println("wrong option?!");
+            userInput = BR.readLine();
+        }
+        level = Integer.parseInt(userInput);
+        output = output_path + "output_" + level + ".log";
         BufferedWriter logger = new BufferedWriter(new FileWriter(new File(output)));
+        System.out.println("level : " + level);
         Loader loader = new Loader(level);
         run.execute(loader);
         logger.write(run.metrics.toString());
         logger.flush();
         logger.close();
+        BR.close();
+        ISR.close();
     }
 
     @Override
     public void execute(Loader config) {
         this.metrics = new Metrics();
-        this.metrics.keepTrack("\nstart");
+        this.metrics.keepTrack("run/Start");
 
         State initState = new State(config.getInitialState(), config);
         State goalState = new State(config.getGoalState(), config);
@@ -65,6 +84,7 @@ public class RunnerBestFirst extends Runner {
         // -- lookup loop:  -----------
         // ----------------------------
 
+        metrics.keepTrack("depth >> nextExpansionSize");
         while (expansionDeque.size() > 0 && !(this.planState instanceof State) && depth < depthLimit) {
             State s = expansionDeque.remove();
             s.expand(initState, expansionHistory, nextExpansionDeque, planDeque); // current always push to next
@@ -73,7 +93,7 @@ public class RunnerBestFirst extends Runner {
 
             if (expansionDeque.size() == 0) { // new depth
                 this.depth++;
-                // System.out.println("\nNew depth: "+this.depth+" >> "+nextExpansionDeque.size()+" > "+s.getDepth()+ " + "+s.getDistance()+ " ");
+                metrics.keepTrack(this.depth+"\t >> "+nextExpansionDeque.size());
                 while (nextExpansionDeque.size() > 0) {
                     State n = nextExpansionDeque.remove();
                     if (expansionTree.containsKey(n.getDistance())) {
@@ -100,6 +120,7 @@ public class RunnerBestFirst extends Runner {
         }
         // fi mientras
 
+        this.metrics.keepTrack("run/Finish");
         if (planDeque.size() != 0) {
             System.out.println("Deque size: " + planDeque.size());
             this.planState = planDeque.getLast(); // last appended is certainly the closest!
@@ -108,6 +129,8 @@ public class RunnerBestFirst extends Runner {
         // ----------------------------
         // -- state result summary : --
         // ----------------------------
+
+        this.metrics.keepTrack("report/Start");
 
         if (this.planState instanceof State) {
             this.plan = this.planState.getPlan();
@@ -121,23 +144,32 @@ public class RunnerBestFirst extends Runner {
             //System.out.println(this.plan);
             int steps = 1;
             for (_Operator op : this.plan) {
-                System.out.println(steps++ + "\t --> " + op.toString());
+                System.out.println(steps + "\t --> " + op.toString());
+                metrics.keepTrack(steps + "\t --> " + op.toString());
+                steps++;
             }
             System.out.println("");
-        } else { // plan impossible to find
+        // } else { // plan impossible to find
             State s = new State();
             String ss = s.bestMatch + "   \t   " + s.skipMatch + "   \t   " + s.loopMatch + "   \t   " + s.stateCounter;
-            System.out.println("bm   \t   sm   \t   lm   \t   sc");
+            System.out.println("best \t   skip \t   loop \t   total states");
             System.out.println(ss);
-        }
 
+            metrics.keepTrack("best match: "+s.bestMatch+" differences");
+            metrics.keepTrack("skipped:    "+s.skipMatch+" repeated states");
+            metrics.keepTrack("skipped:    "+s.loopMatch+" looping states");
+            metrics.keepTrack("total:      "+s.stateCounter+" states");
+        }
+        /*
         while (planDeque.size() > 0) {
             State s = planDeque.removeFirst();
             System.out.println("State: " + s.getDepth() + " " + s.getDistance() + " " + s);
         }
-
+        */
         System.out.println("Runner Regression Runner");
         System.out.println("Elapsed time: " + this.metrics.getElapsed());
+
+        metrics.keepTrack("report/Finish");
     }
 
 
