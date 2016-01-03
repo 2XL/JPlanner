@@ -61,9 +61,9 @@ public class RunnerBestFirst extends Runner {
         State goalState = new State(config.getGoalState(), config);
 
         System.out.println("InitialState: \t");
-        System.out.println(config.getInitialState());
+        System.out.println(initState.getState());
         System.out.println("GoalState: \t");
-        System.out.println(config.getGoalState());
+        System.out.println(goalState.getState());
 
         HashSet<State> expansionHistory = new HashSet<>(); // contains a history of all the expanded states / hash, state
         Deque<State> expansionDeque = new LinkedList<>(); // cola de exploracion
@@ -111,6 +111,7 @@ public class RunnerBestFirst extends Runner {
                             if (expansionTree.containsKey(match)) {
                                 expansionDeque.addAll(expansionTree.get(match));
                             }
+
                             break;
                         }
                     }
