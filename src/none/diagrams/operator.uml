@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>none.operator</OriginalElement>
+  <nodes>
+    <node x="377.99999999999994" y="413.0">none.operator.Move</node>
+    <node x="776.0" y="402.0">none.operator.Push</node>
+    <node x="0.0" y="424.0">none.operator.CleanOffice</node>
+    <node x="429.49999999999994" y="278.0">none.operator._Operator</node>
+    <node x="427.49999999999994" y="0.0">none.operator._OperatorAction</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="none.operator.Move" target="none.operator._Operator">
+      <point x="0.0" y="-170.0" />
+      <point x="0.0" y="37.0" />
+    </edge>
+    <edge source="none.operator.CleanOffice" target="none.operator._Operator">
+      <point x="0.0" y="-159.0" />
+      <point x="179.0" y="377.0" />
+      <point x="475.33333333333326" y="377.0" />
+      <point x="-91.66666666666669" y="37.0" />
+    </edge>
+    <edge source="none.operator.Push" target="none.operator._Operator">
+      <point x="0.0" y="-181.0" />
+      <point x="964.0" y="377.0" />
+      <point x="658.6666666666667" y="377.0" />
+      <point x="91.66666666666674" y="37.0" />
+    </edge>
+    <edge source="none.operator._Operator" target="none.operator._OperatorAction">
+      <point x="0.0" y="-37.0" />
+      <point x="0.0" y="114.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.9693877551020408" x="576.0" y="382.0" />
+  <SelectedNodes>
+    <node>none.operator._OperatorAction</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>none.RunnerBestFirst</OriginalElement>
+  <nodes>
+    <node x="-326.60043859649124" y="430.4630139802631">none.state</node>
+    <node x="-290.26013993316616" y="251.63406661184212">none.config</node>
+    <node x="-674.5991628376497" y="642.6538034539474">none.operator</node>
+    <node x="-555.4177857839043" y="423.5616981907895">none.predicate</node>
+    <node x="-22.306631161236467" y="289.0932771381579">none.RunnerBestFirst</node>
+    <node x="-672.9423245614037" y="250.22748766447376">none.building</node>
+    <node x="-16.638157894736878" y="587.4393297697369">none.Runner</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="none.operator" target="none.building">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="none.Runner" target="none.operator">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="none.state" target="none.predicate">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="none.state" target="none.operator">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="none.state" target="none.building">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="none.Runner" target="none.state">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="none.operator" target="none.state">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="none.RunnerBestFirst" target="none.config">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="none.config" target="none.building">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="none.operator" target="none.predicate">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="none.predicate" target="none.building">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="none.RunnerBestFirst" target="none.Runner">
+      <point x="-77.99999999999997" y="-103.5" />
+      <point x="58.843368838763425" y="545.8327508223684" />
+      <point x="64.86710526315778" y="583.5459087171052" />
+      <point x="0.0" y="81.5" />
+    </edge>
+    <edge source="none.building" target="none.building">
+      <point x="0.0" y="0.0" />
+      <point x="-611.4423245614037" y="225.72748766447376" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="none.RunnerBestFirst" target="none.state">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.9015421115065243" x="-101.5" y="411.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
