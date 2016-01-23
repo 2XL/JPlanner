@@ -1,13 +1,11 @@
 package lineal;
 
-import lineal.stack.E;
-import lineal.stack.O;
-import lineal.stack.P;
-import lineal.stack.State;
+import lineal.stack.*;
 
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Planificador lineal con pila de objetivos
@@ -47,7 +45,7 @@ public class Planner {
         List<O> planActual; // operadores
         planActual = new LinkedList<>(); // lista de operaciones para alcanzar al goalState
         Deque<E> pila; // admite operadores/predicados/listadepredicados[estado]
-        pila = new LinkedList<>(); // pila de transición
+        pila = new LinkedList<>(); // pila de transiciï¿½n
         State estadoActual = this.estadoInicial;   // estado actual
 
         pila.add(this.estadoFinal); // apilar estado final
@@ -69,17 +67,28 @@ public class Planner {
             String str = item.getClass().getSimpleName();
             switch (str){
                 case "1":
+                case "Adjacent":
+                case "BoxLocation":
+                case "Clean":
+                case "Dirty":
+                case "Empty":
+                case "RobotLocation":
+
                     /*
                         1: E es un operador
                             EstadoActual := AplicarOperador(EstadoActual, E)
-                            Añadir(PlanActual, E)
+                            Aï¿½adir(PlanActual, E)
                      */
 
 
                     break;
                 case "2":
+                case "PList":
+
+                    estadoActual.hasAllPre((PList) item, pila); // a pilar a la pila todos los que no se cumplan
+
                     /*
-                        2: E es una lista de condiciones
+                        2: E es una lista de condiciones -- precondiciones de un operador
                             Si no(CumpleCondiciones?(E, EstadoActual))
                             Entonces Apilar(P,E)
                                 Para CadaCondicion C de E que no se cumpla en EstadoActual:
@@ -87,8 +96,11 @@ public class Planner {
                                 FPara
                             Fsi
                      */
+
                     break;
                 case "3":
+
+                    estadoActual.hasCond(item, pila);
                     /*
                         3: E es una condicion parcialmente instanciada
                             Buscar en el estado actual una instancia que satisfaga la condicion
@@ -97,10 +109,14 @@ public class Planner {
 
                     break;
                 case "4":
+
+
+
+
                     /*
                         4: E es una condicion totalmente instanciada
                             Si no (CumpleCondicion?(E, EstadoActual)) Entonces
-                            Buscar Operador O que permita obtener E en su lista de añadir
+                            Buscar Operador O que permita obtener E en su lista de aï¿½adir
                                 Apilar(P, O)
                                 Apilar(P, precondicion(O)
                                 Para Toda Condicion C de Precondiciones(O)
@@ -137,7 +153,7 @@ public class Planner {
 
 
 
-        // una vez tenga implementado todo y llega a este punto implica que se ha encontrado una solución.
+        // una vez tenga implementado todo y llega a este punto implica que se ha encontrado una soluciï¿½n.
 
 
 

@@ -4,6 +4,7 @@ import lineal.stack.E;
 import lineal.stack.P;
 import lineal.stack.ops.*;
 
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -66,6 +67,48 @@ public class State implements E {
         return pre;
     }
 
+
+    public boolean hasPre(P p){
+        return this.pre.contains(p); // if it contains a certain string.
+    }
+
+    /**
+     * Returns a list of none matching
+     * @return
+     */
+    public boolean hasAllPre(PList pl , Deque<E> pila){
+
+        boolean hasAll = true;
+        for(Object p : pl.getList())
+        {
+            // return the p that are not satisfied
+            if(this.pre.contains(p)){
+                continue;
+            }else{
+                hasAll = false;
+                pila.add((P) p);
+            }
+        }
+        return hasAll;
+    }
+
+    public boolean hasCond(E cond, Deque<E> pila){
+
+        // buscar en el estado actual una instancia que satisfaga la condicion cond
+
+        boolean hasCond = false;
+        for(Object p : pl.getList())
+        {
+            // return the p that are not satisfied
+            if(this.pre.contains(p)){
+                hasCond = true;
+                // transmitir a la pila????? WTF
+            }else{
+                continue;
+            }
+        }
+        return hasCond;
+    }
 
     @Override
     public String toString() {
