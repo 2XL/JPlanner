@@ -1,7 +1,6 @@
 package lineal.stack;
 
 import lineal.stack.ops.*;
-import src.lineal.stack.PList;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -96,7 +95,7 @@ public class State implements E {
         // buscar en el estado actual una instancia que satisfaga la condicion cond
 
         boolean hasCond = false;
-        for(Object p : pl.getList())
+        for(Object p : this.pre)
         {
             // return the p that are not satisfied
             if(this.pre.contains(p)){
