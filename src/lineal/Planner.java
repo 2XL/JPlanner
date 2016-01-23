@@ -1,11 +1,11 @@
 package lineal;
 
 import lineal.stack.*;
+import src.lineal.stack.PList;
 
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Planificador lineal con pila de objetivos

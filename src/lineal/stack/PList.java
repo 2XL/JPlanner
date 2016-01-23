@@ -1,4 +1,4 @@
-package lineal.stack;
+package src.lineal.stack;
 
 import java.util.*;
 

@@ -1,8 +1,7 @@
 package lineal.stack;
 
-import lineal.stack.E;
-import lineal.stack.P;
 import lineal.stack.ops.*;
+import src.lineal.stack.PList;
 
 import java.util.Deque;
 import java.util.LinkedList;
