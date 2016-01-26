@@ -1,4 +1,4 @@
-package lineal.stack.ops;
+package lineal.stack.pre;
 
 import lineal.stack.P;
 
@@ -12,8 +12,15 @@ public class Clean extends P {
 
     String o;
 
-    public Clean() {
 
+    public Clean() {
+        this.priority = 3;
+        this.o = null;
+    }
+
+    @Override
+    public boolean isParcialDefined(){
+        return this.o == null;
     }
 
     public Clean(String o) {

@@ -1,7 +1,8 @@
-package lineal.stack.pre;
+package lineal.stack.ops;
 
 import lineal.stack.E;
 import lineal.stack.O;
+import lineal.stack.State;
 
 /**
  * Created by j on 16/01/2016.
@@ -12,14 +13,16 @@ public class Push extends O {
     String o1;
     String o2;
 
+
+    public Push() {
+        // oncstructor vacio
+    }
+
     public Push(String b, String o1, String o2) {
         this.b = b;
         this.o1 = o1;
         this.o2 = o2;
-    }
-
-    public Push() {
-
+        this.defined = true;
     }
 
     public String getB() {
@@ -60,5 +63,8 @@ public class Push extends O {
     public void remove(E e) {
         String str = "BoxLocation(" + this.b + "," + this.o1 + "):RobotLocation(" + this.o1 + "):Empty(" + this.o2 + ")";
     }
-
+    public void apply(State s){
+        this.add(s);
+        this.remove(s);
+    }
 }

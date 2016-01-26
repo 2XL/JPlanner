@@ -1,4 +1,4 @@
-package lineal.stack.ops;
+package lineal.stack.pre;
 
 import lineal.stack.P;
 
@@ -8,16 +8,28 @@ import java.util.regex.Pattern;
 /**
  * Created by j on 16/01/2016.
  */
-public class Dirty extends P {
+public class BoxLocation extends P {
 
     String o;
+    String b;
 
-    public Dirty(){
+    public BoxLocation() {
+        this.priority = 2;
+        // empty constructor to leave the variables undefined
 
+        this.o = null;
+
+        this.b = null;
     }
 
-    public Dirty(String o){
+    public BoxLocation(String b, String o) {
         this.o = o;
+        this.b = b;
+    }
+
+    @Override
+    public boolean isParcialDefined(){
+        return this.o == null || this.b == null;
     }
 
     public String getO() {
@@ -32,7 +44,7 @@ public class Dirty extends P {
     public String toString() {
 
         // return super.toString();
-        return "Dirty(" + this.o + ")";
+        return "BoxLocation(" + this.b + "," + this.o + ")";
     }
 
 
@@ -41,7 +53,8 @@ public class Dirty extends P {
         Matcher match = pattern.matcher(str);
         if (match.find()) {
             String[] methodArgs = (match.group(1)).split(",");
-            this.o = methodArgs[0];
+            this.o = methodArgs[1];
+            this.b = methodArgs[0];
         }
     }
 }

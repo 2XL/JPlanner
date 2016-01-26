@@ -6,6 +6,13 @@ package lineal.stack;
 public abstract class P implements E{
 
 
+    protected int priority = 0;
+    protected boolean defined = false;
 
+
+    public boolean isParcialDefined(){
+
+        return this.defined;
+    }
 
 }

@@ -41,6 +41,10 @@ public class Planner {
      * @return
      */
     public boolean resolve(){
+
+        // init static adjacent table...
+
+        Broker broker = new Broker(); //
         List<O> planActual; // operadores
         planActual = new LinkedList<>(); // lista de operaciones para alcanzar al goalState
         Deque<E> pila; // admite operadores/predicados/listadepredicados[estado]
@@ -57,35 +61,40 @@ public class Planner {
         // mientras la pila no este vacia... implica que no se cumplido todas las condiciones.
 
         while(pila.size() != 0){
-
-            E item = pila.removeLast(); // E es igual la cima de p
+            System.out.println(estadoActual.getPre());
+            E e = pila.removeLast(); // E es igual la cima de p
             // luego desapilar P...
 
+            // before apply operation, sort the pred list
+            // 1st Clean an office
+            // 2nd Move a box
+            // 3rd Robot location
 
-            System.out.println(item);
-            String str = item.getClass().getSimpleName();
+            System.out.println(e);
+            String str = e.getClass().getSimpleName();
             switch (str){
                 case "1":
-                case "Adjacent":
-                case "BoxLocation":
-                case "Clean":
-                case "Dirty":
-                case "Empty":
-                case "RobotLocation":
-
+                case "Push":
+                case "Move":
+                case "CleanOffice":
                     /*
                         1: E es un operador
                             EstadoActual := AplicarOperador(EstadoActual, E)
                             A�adir(PlanActual, E)
                      */
-
-
+                    estadoActual.applyOp((O) e);
+                    planActual.add((O) e);
                     break;
                 case "2":
                 case "PList":
-
-                    estadoActual.hasAllPre((PList) item, pila); // a pilar a la pila todos los que no se cumplan
-
+                    // añadir a la pila preds
+                    List<E> listNoCumple = estadoActual.hasAllPre((PList) e); // apilar a la pila todos los que no se cumplan
+                    if(listNoCumple.size() == 0){
+                        // noop
+                    }else {
+                        pila.add(e); // volver a analizarlo
+                        pila.addAll(listNoCumple); // analizar sus differencias
+                    }
                     /*
                         2: E es una lista de condiciones -- precondiciones de un operador
                             Si no(CumpleCondiciones?(E, EstadoActual))
@@ -95,23 +104,36 @@ public class Planner {
                                 FPara
                             Fsi
                      */
-
                     break;
                 case "3":
+                case "Adjacent":
+                case "BoxLocation":
+                case "Clean":
+                case "Dirty":
+                case "Empty":
+                case "RobotLocation":
 
-                    estadoActual.hasCond(item, pila);
+                    if(!((P) e).isParcialDefined()) {
+                        estadoActual.hasCond(e, pila);
                     /*
                         3: E es una condicion parcialmente instanciada
                             Buscar en el estado actual una instancia que satisfaga la condicion
                             Transmitir esta instancia a todos los elementos de la pila P
                      */
 
-                    break;
+                        break;
+                    }else{
+                            // es caso 4
+                    }
                 case "4":
+                        if(estadoActual.hasCond(e, pila)){
+                            // operador O que permita obtener P en su lista de añadir
 
+                            // se añade operador con su lista de pre-condiciones.
 
-
-
+                        }else{
+                            // noop descartar el cond, siguiente: continue;
+                        }
                     /*
                         4: E es una condicion totalmente instanciada
                             Si no (CumpleCondicion?(E, EstadoActual)) Entonces
@@ -126,10 +148,16 @@ public class Planner {
 
 
                     break;
+                case "5":
+                case "State":
+                    System.out.println("Solution found!");
+                    break;
                 default:
                     System.out.println(str); // unhandled case
                     break;
             }
+
+            break;
 
             /*
             RobotLocation(o1)
@@ -153,9 +181,6 @@ public class Planner {
 
 
         // una vez tenga implementado todo y llega a este punto implica que se ha encontrado una soluci�n.
-
-
-
         return false;
     }
 
@@ -168,8 +193,5 @@ public class Planner {
     public static void main(String[] args){
         Planner lpsg = new Planner(0); // Linear Planer with Stack of Goals
         lpsg.resolve();
-
     }
-
-
 }

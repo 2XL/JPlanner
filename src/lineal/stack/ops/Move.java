@@ -1,8 +1,9 @@
-package lineal.stack.pre;
+package lineal.stack.ops;
 
 import lineal.stack.E;
 import lineal.stack.O;
 import lineal.stack.P;
+import lineal.stack.State;
 
 import java.util.List;
 
@@ -16,12 +17,13 @@ public class Move extends O {
 
 
     public Move() {
-
+        // constructor vacio
     }
 
     public Move(String o1, String o2) {
         this.o2 = o2;
         this.o1 = o1;
+        this.defined = true;
     }
 
     public String getO1() {
@@ -67,4 +69,8 @@ public class Move extends O {
         String str = "RobotLocation("+this.o1+")";
     }
 
+    public void apply(State s){
+        this.add(s);
+        this.remove(s);
+    }
 }

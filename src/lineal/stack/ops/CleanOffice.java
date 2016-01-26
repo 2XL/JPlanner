@@ -1,8 +1,9 @@
-package lineal.stack.pre;
+package lineal.stack.ops;
 
 import lineal.stack.E;
 import lineal.stack.O;
 import lineal.stack.P;
+import lineal.stack.State;
 
 import java.util.List;
 
@@ -15,12 +16,12 @@ public class CleanOffice extends O {
     String o;
 
     public CleanOffice(){
-
+        // constructor vacio
     }
 
     public CleanOffice(String o){
-
         this.o = o;
+        this.defined = true;
     }
 
     public String getO() {
@@ -59,5 +60,11 @@ public class CleanOffice extends O {
     }
 
 
+
+
+    public void apply(State s){
+        this.add(s);
+        this.remove(s);
+    }
 
 }

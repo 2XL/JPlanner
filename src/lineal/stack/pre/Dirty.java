@@ -1,4 +1,4 @@
-package lineal.stack.ops;
+package lineal.stack.pre;
 
 import lineal.stack.P;
 
@@ -8,14 +8,22 @@ import java.util.regex.Pattern;
 /**
  * Created by j on 16/01/2016.
  */
-public class RobotLocation extends P {
+public class Dirty extends P {
+
     String o;
 
-    public RobotLocation() {
+    public Dirty(){
+        this.priority = 0; // noop
 
+        this.o = null;
     }
 
-    public RobotLocation(String o) {
+    @Override
+    public boolean isParcialDefined(){
+        return this.o == null;
+    }
+
+    public Dirty(String o){
         this.o = o;
     }
 
@@ -29,9 +37,11 @@ public class RobotLocation extends P {
 
     @Override
     public String toString() {
+
         // return super.toString();
-        return "RobotLocation(" + this.o + ")";
+        return "Dirty(" + this.o + ")";
     }
+
 
     public void setAttr(String str) {
         Pattern pattern = Pattern.compile("\\((.*?)\\)");

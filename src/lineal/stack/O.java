@@ -5,10 +5,20 @@ package lineal.stack;
 public abstract class O implements E {
 
 
+    protected boolean defined = false;
     protected boolean precondition(){
         // lista de condiciones que deben de ser cumplidas para aplicar el operador
 
         return false;
+    }
+
+    protected boolean isDefined(){
+        return this.defined;
+    }
+
+
+    protected void apply(State s){
+
     }
 
     protected boolean add(){

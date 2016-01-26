@@ -1,6 +1,6 @@
 package lineal.stack;
 
-import lineal.stack.ops.*;
+import lineal.stack.pre.*;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -20,6 +20,14 @@ public class State implements E {
 
     public State(List<P> list) {
         this.pre = list;
+
+    }
+
+    public void applyOp(O op){
+
+        // do reflection
+        op.apply(this); // this state apply ops
+        // addPre(op.toString());
 
     }
 
@@ -74,20 +82,18 @@ public class State implements E {
      * Returns a list of none matching
      * @return
      */
-    public boolean hasAllPre(PList pl , Deque<E> pila){
-
-        boolean hasAll = true;
+    public List<E> hasAllPre(PList pl){
+        List<E> temp = new LinkedList<>();
         for(Object p : pl.getList())
         {
             // return the p that are not satisfied
             if(this.pre.contains(p)){
                 continue;
             }else{
-                hasAll = false;
-                pila.add((P) p);
+                 temp.add((P) p);
             }
         }
-        return hasAll;
+        return temp;
     }
 
     public boolean hasCond(E cond, Deque<E> pila){
@@ -101,6 +107,8 @@ public class State implements E {
             if(this.pre.contains(p)){
                 hasCond = true;
                 // transmitir a la pila????? WTF
+                // todo No se esto, supongo que quiere que actualize la variable en PList
+                //
             }else{
                 continue;
             }

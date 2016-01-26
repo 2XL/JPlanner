@@ -1,4 +1,4 @@
-package lineal.stack.ops;
+package lineal.stack.pre;
 
 import lineal.stack.P;
 
@@ -13,7 +13,14 @@ public class Empty extends P {
     String o;
 
     public Empty(){
+        this.priority = 0;
 
+        this.o = null;
+    }
+
+    @Override
+    public boolean isParcialDefined(){
+        return this.o == null;
     }
 
     public Empty(String o){

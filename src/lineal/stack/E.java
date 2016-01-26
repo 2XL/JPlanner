@@ -5,17 +5,7 @@ package lineal.stack;
  */
 public interface E {
 
-
-
-
     String toString();
-
-
-
-
-
-
-
 
 
 }
