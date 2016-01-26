@@ -13,6 +13,7 @@ public class RobotLocation extends P {
 
 
     public RobotLocation() {
+        this.type = "RobotLocation";
         this.priority = 1;
         this.o = null;
     }
@@ -24,6 +25,10 @@ public class RobotLocation extends P {
 
     public RobotLocation(String o) {
         this.o = o;
+
+        this.type = "RobotLocation";
+        this.priority = 1;
+
     }
 
     public String getO() {

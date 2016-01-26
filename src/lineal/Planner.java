@@ -140,7 +140,7 @@ public class Planner {
                             // ask Broker for operator and append Plist
                             O op = broker.getOperator((P)e);
 
-                            // PList pl = op.getPredList(); // list of preconditions of a certain operator
+                            PList pl = op.getPredList(); // list of preconditions of a certain operator
                             //pila.add(op);
                             //pila.add(pl);
 

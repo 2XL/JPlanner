@@ -25,6 +25,8 @@ public class BoxLocation extends P {
     public BoxLocation(String b, String o) {
 
         this.type = "BoxLocation";
+
+        this.priority = 2;
         this.o = o;
         this.b = b;
     }
@@ -40,6 +42,15 @@ public class BoxLocation extends P {
 
     public void setO(String o) {
         this.o = o;
+    }
+
+
+    public void setB(String b) {
+        this.b = b;
+    }
+
+    public String getB() {
+        return b;
     }
 
     @Override
