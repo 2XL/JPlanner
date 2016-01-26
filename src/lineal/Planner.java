@@ -44,7 +44,7 @@ public class Planner {
 
         // init static adjacent table...
 
-        Broker broker = new Broker(); //
+        Broker broker = new Broker(this.s.getConfig(), this.s.setupOfficeAdjacent()); //
         List<O> planActual; // operadores
         planActual = new LinkedList<>(); // lista de operaciones para alcanzar al goalState
         Deque<E> pila; // admite operadores/predicados/listadepredicados[estado]
@@ -77,6 +77,7 @@ public class Planner {
                 case "Push":
                 case "Move":
                 case "CleanOffice":
+                    System.out.println("Case 1");
                     /*
                         1: E es un operador
                             EstadoActual := AplicarOperador(EstadoActual, E)
@@ -87,6 +88,7 @@ public class Planner {
                     break;
                 case "2":
                 case "PList":
+                    System.out.println("Case 2");
                     // añadir a la pila preds
                     List<E> listNoCumple = estadoActual.hasAllPre((PList) e); // apilar a la pila todos los que no se cumplan
                     if(listNoCumple.size() == 0){
@@ -113,8 +115,9 @@ public class Planner {
                 case "Empty":
                 case "RobotLocation":
 
-                    if(!((P) e).isParcialDefined()) {
-                        estadoActual.hasCond(e, pila);
+                    if(((P) e).isParcialDefined()) {
+                        System.out.println("Case 3");
+                        estadoActual.hasCond(e);
                     /*
                         3: E es una condicion parcialmente instanciada
                             Buscar en el estado actual una instancia que satisfaga la condicion
@@ -123,15 +126,24 @@ public class Planner {
 
                         break;
                     }else{
+                        System.out.println("Case 4");
                             // es caso 4
                     }
                 case "4":
-                        if(estadoActual.hasCond(e, pila)){
+                        if(estadoActual.hasCond(e)){
                             // operador O que permita obtener P en su lista de añadir
-
                             // se añade operador con su lista de pre-condiciones.
+                            System.out.print("found!");
 
                         }else{
+                            System.out.print("Not found...");
+                            // ask Broker for operator and append Plist
+                            O op = broker.getOperator((P)e);
+
+                            // PList pl = op.getPredList(); // list of preconditions of a certain operator
+                            //pila.add(op);
+                            //pila.add(pl);
+
                             // noop descartar el cond, siguiente: continue;
                         }
                     /*

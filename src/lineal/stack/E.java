@@ -7,5 +7,4 @@ public interface E {
 
     String toString();
 
-
 }

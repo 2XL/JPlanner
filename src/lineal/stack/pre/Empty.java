@@ -14,7 +14,6 @@ public class Empty extends P {
 
     public Empty(){
         this.priority = 0;
-
         this.o = null;
     }
 

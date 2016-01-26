@@ -17,12 +17,14 @@ public class BoxLocation extends P {
         this.priority = 2;
         // empty constructor to leave the variables undefined
 
+        this.type = "BoxLocation";
         this.o = null;
-
         this.b = null;
     }
 
     public BoxLocation(String b, String o) {
+
+        this.type = "BoxLocation";
         this.o = o;
         this.b = b;
     }

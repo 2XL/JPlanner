@@ -2,7 +2,11 @@ package lineal.stack.ops;
 
 import lineal.stack.E;
 import lineal.stack.O;
+import lineal.stack.PList;
 import lineal.stack.State;
+import lineal.stack.pre.Adjacent;
+import lineal.stack.pre.BoxLocation;
+import lineal.stack.pre.RobotLocation;
 
 /**
  * Created by j on 16/01/2016.
@@ -16,9 +20,13 @@ public class Push extends O {
 
     public Push() {
         // oncstructor vacio
+        this.type = "Push";
+
     }
 
     public Push(String b, String o1, String o2) {
+
+        this.type = "Push";
         this.b = b;
         this.o1 = o1;
         this.o2 = o2;
@@ -55,11 +63,11 @@ public class Push extends O {
         // return super.toString();
         return "Push(" + this.b + "," + this.o1 + "," + this.o2 + ")";
     }
-
+    @Override
     public void add(E e) {
         String str = "BoxLocation(" + this.b + "," + this.o2 + "):RobotLocation(" + this.o2 + "):Empty(" + this.o1 + ")";
     }
-
+    @Override
     public void remove(E e) {
         String str = "BoxLocation(" + this.b + "," + this.o1 + "):RobotLocation(" + this.o1 + "):Empty(" + this.o2 + ")";
     }
@@ -67,4 +75,17 @@ public class Push extends O {
         this.add(s);
         this.remove(s);
     }
+
+
+    @Override
+    public PList getPredList(){
+        PList pl = new PList();
+
+        pl.addCond(new RobotLocation(this.o1));
+        pl.addCond(new BoxLocation(this.b, this.o1));
+        pl.addCond(new Adjacent(this.o1, this.o2));
+        return pl;
+    }
+
+
 }

@@ -96,19 +96,21 @@ public class State implements E {
         return temp;
     }
 
-    public boolean hasCond(E cond, Deque<E> pila){
+    public boolean hasCond(E cond){
 
         // buscar en el estado actual una instancia que satisfaga la condicion cond
-
         boolean hasCond = false;
         for(Object p : this.pre)
         {
             // return the p that are not satisfied
-            if(this.pre.contains(p)){
+            // if(this.pre.contains(cond)){
+            System.out.println("Has condition? "+p+" as "+cond +" ?");
+            if(p.equals(cond)){
                 hasCond = true;
                 // transmitir a la pila????? WTF
                 // todo No se esto, supongo que quiere que actualize la variable en PList
                 //
+                System.out.println("Has condition! "+p+"");
             }else{
                 continue;
             }

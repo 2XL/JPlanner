@@ -1,9 +1,9 @@
 package lineal.stack.ops;
 
-import lineal.stack.E;
-import lineal.stack.O;
-import lineal.stack.P;
-import lineal.stack.State;
+import lineal.stack.*;
+import lineal.stack.pre.Dirty;
+import lineal.stack.pre.Empty;
+import lineal.stack.pre.RobotLocation;
 
 import java.util.List;
 
@@ -16,10 +16,12 @@ public class CleanOffice extends O {
     String o;
 
     public CleanOffice(){
+        this.type = "CleanOffice";
         // constructor vacio
     }
 
     public CleanOffice(String o){
+        this.type = "CleanOffice";
         this.o = o;
         this.defined = true;
     }
@@ -51,14 +53,26 @@ public class CleanOffice extends O {
         return true;
     }
 
+    @Override
     public void add(E e){
         String str =  "Clean("+this.o+")";
     }
 
+    @Override
     public void remove(E e){
         String str = "Dirty("+this.o+")";
     }
 
+    @Override
+    public PList getPredList(){
+        PList pl = new PList();
+
+        pl.addCond(new RobotLocation(this.o));
+        pl.addCond(new Dirty(this.o));
+        pl.addCond(new Empty(this.o));
+
+        return pl;
+    }
 
 
 

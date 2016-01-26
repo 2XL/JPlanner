@@ -5,10 +5,7 @@ import lineal.stack.State;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by j on 16/01/2016.
@@ -17,7 +14,7 @@ public class Setup {
 
     private int dimension;
     private String config_file_path;
-    private Map<String, List> rawConfig;
+    private HashMap<String, List> rawConfig;
 
     public Setup(int level) {
         if (level == 0) {
@@ -34,12 +31,11 @@ public class Setup {
         // GoalState
     }
 
-
     public void load() {
         this.rawConfig = this.loadConfigHashMap();
     }
 
-    public Map getConfig() {
+    public HashMap<String, List> getConfig() {
         return rawConfig;
     }
 
@@ -54,14 +50,15 @@ public class Setup {
         return s;
     }
 
-    public Map loadConfigHashMap() {
+    public HashMap loadConfigHashMap() {
+
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(this.config_file_path));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Map<String, List<String>> configuration = new HashMap();
+        HashMap<String, List<String>> configuration = new HashMap();
         try {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
@@ -94,6 +91,53 @@ public class Setup {
         return configuration;
     }
 
+    public HashMap<String, Set<String>> setupOfficeAdjacent() {
+        List<String> offices = this.getConfig().get("Offices");
+        HashMap<String, Set<String>> adjacent = new HashMap<>();
+        int dim = (int) Math.sqrt(offices.size());
+        String[][] building = new String[dim][dim];
+        int index = 0;
+        // hasSetup the building index
+        for (int x = 0; x < dim; x++) {
+            for (int y = 0; y < dim; y++) {
+                building[x][y] = offices.get(index++);
+            }
+        }
+        // check if adjacent
+        for (int row = 0; row < dim; row++)
+            for (int column = 0; column < dim; column++) {
+                String office = building[row][column];
+                adjacent.put(office, new HashSet<>());
+                try {
+                    if (building[row + 1][column] != null) {
+                        // office.putAdjacent(building[row + 1][column]);
+                        adjacent.get(office).add(building[row+1][column]);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                }
+                try {
+
+                    if (building[row][column + 1] != null) {
+                        adjacent.get(office).add(building[row][column + 1]);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                }
+                try {
+                    if (building[row - 1][column] != null) {
+                        adjacent.get(office).add(building[row - 1][column]);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                }
+                try {
+                    if (building[row][column - 1] != null) {
+                        adjacent.get(office).add(building[row][column - 1]);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                }
+            }
+
+        return adjacent;
+    }
 
     public static void main(String[] args) {
         System.out.println("Setup");

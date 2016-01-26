@@ -5,7 +5,7 @@ package lineal.stack;
  */
 public abstract class P implements E{
 
-
+    protected  String type = "P";
     protected int priority = 0;
     protected boolean defined = false;
 
@@ -15,4 +15,8 @@ public abstract class P implements E{
         return this.defined;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return this.toString().equals(obj.toString());
+    }
 }

@@ -14,6 +14,8 @@ public class Clean extends P {
 
 
     public Clean() {
+
+        this.type = "Clean";
         this.priority = 3;
         this.o = null;
     }
@@ -24,6 +26,8 @@ public class Clean extends P {
     }
 
     public Clean(String o) {
+        this.priority = 3;
+        this.type = "Clean";
         this.o = o;
     }
 

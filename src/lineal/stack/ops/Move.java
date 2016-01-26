@@ -1,9 +1,8 @@
 package lineal.stack.ops;
 
-import lineal.stack.E;
-import lineal.stack.O;
-import lineal.stack.P;
-import lineal.stack.State;
+import lineal.stack.*;
+import lineal.stack.pre.Adjacent;
+import lineal.stack.pre.RobotLocation;
 
 import java.util.List;
 
@@ -17,10 +16,14 @@ public class Move extends O {
 
 
     public Move() {
+
+        this.type = "Move";
         // constructor vacio
     }
 
     public Move(String o1, String o2) {
+
+        this.type = "Move";
         this.o2 = o2;
         this.o1 = o1;
         this.defined = true;
@@ -61,16 +64,31 @@ public class Move extends O {
         }
         return true;
     }
+    @Override
     public void add(E e){
-        String str =  "RobotLocation("+this.o2+")";
-    }
+        RobotLocation rl = new RobotLocation(this.o2);
+        // String str =  "RobotLocation("+this.o2+")";
 
+    }
+    @Override
     public void remove(E e){
-        String str = "RobotLocation("+this.o1+")";
+        RobotLocation rl = new RobotLocation(this.o1);
+        // String str = "RobotLocation("+this.o1+")";
     }
 
     public void apply(State s){
         this.add(s);
         this.remove(s);
     }
+
+    @Override
+    public PList getPredList(){
+        PList pl = new PList();
+        pl.addCond(new RobotLocation(this.o1));
+        pl.addCond(new Adjacent(this.o1, this.o2));
+        return pl;
+    }
+
+
+
 }

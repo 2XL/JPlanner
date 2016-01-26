@@ -13,8 +13,9 @@ public class Dirty extends P {
     String o;
 
     public Dirty(){
-        this.priority = 0; // noop
 
+        this.type = "Dirty";
+        this.priority = 0; // noop
         this.o = null;
     }
 
