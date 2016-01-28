@@ -24,16 +24,17 @@ public class Broker {
     int dimension;
     Map<String, List<String>> adjacent;
     Map<String, List<String>> condOp; // operatdores que al aplicarse satisface una condicion
-
-    public Broker(HashMap<String, List> map, HashMap adjacent){
+    State currentState;
+    public Broker(HashMap<String, List> map, HashMap adjacent, State currState){
         // System.out.println(map);
+        this.currentState = currState;
         this.adjacent = adjacent;
         this.boxes = map.get("Boxes");
         this.offices = map.get("Offices");
         System.out.println(this.boxes);
         System.out.println(this.offices);
         System.out.println(this.adjacent);
-
+        this.dimension = (int)Math.sqrt(this.offices.size());
 
         condOp = new HashMap<>();
 
@@ -43,9 +44,39 @@ public class Broker {
 
     }
 
+    private String assignAdjacent(String src, String tgt){
+        String result;
+        if(this.dimension == 2){
+            // take one
+            result = this.adjacent.get(tgt).get(0);
+        }else{
+            // take one that is adjacent to current or adjacent to target which is adjacent to current
+            // if src is adjacent to tgt then pick src
+            // otherwise choose one that is adjacent to source and target
+            // this could be a regressive loop
+            List<String> adjacentsTgt = this.adjacent.get(tgt); // target adjacent
+            if(adjacentsTgt.contains(src))
+                return src;
+
+
+            List<String> adjacentsSrc = this.adjacent.get(src); // source adjacent
+
+            List<String> mixing = new LinkedList<>(adjacentsSrc);
+
+            mixing.retainAll(adjacentsTgt);
+            if(mixing.size() == 0){
+                return adjacentsTgt.get(0);
+            }else{
+                return mixing.get(0);
+            }
+            // case 1 at one step
+            // case 2 at adjacentsSrc and adjacentsTgt // have mixing
+            // otherwise choose random tgt neighbor
+        }
+        return result;
+    }
+
     public O getOperator(P p){
-
-
         System.out.println(p);
 
         // given a p -> precondition
@@ -58,14 +89,33 @@ public class Broker {
             case "RobotLocation":
                 Move move = new Move(); // our robot to the location
                 move.setO2(((RobotLocation)p).getO());
+                // Move(null,Y)
+                String o1 = assignAdjacent(this.currentState.getRobotLocation().getO(), move.getO2());
+                move.setO1(o1);
+                // Move(X,Y)
+                // assign its ajacent here
+                // but what o1 should i choose?, choose the one that is adjacent to current position, if the dim is 3 otherwise just take one
+                // incognita fixed
                 return move;
                 // move
                 // break;
             case "Empty":
-                // push
+                // push // this should not be done? as this goal will be achived when box location is correct
                 // push whatever box
+                // Push(B,X,Y)
                 Push pushEmpty =  new Push(); // push the box on the office to somewhere else
                 pushEmpty.setO1(((Empty)p).getO());
+                // know what box is on the pushEmpty
+                String box = this.currentState.getBoxLocation(pushEmpty.getO1());
+                pushEmpty.setB(box);
+                String o2 = this.currentState.getFreeAdjacent(this.adjacent.get(pushEmpty.getO1()));
+                if(o2 == null){
+                    System.out.println("Block got Stucked");
+                    // move this operator to the tail?
+                    // or just noop and force the need to move a neighbor block
+                }else{
+                    pushEmpty.setO2(o2);
+                }
                 return pushEmpty;
                 // break;
             case "BoxLocation": // push a certain box to that office
@@ -73,10 +123,14 @@ public class Broker {
                 Push pushBox =  new Push();
                 pushBox.setB(((BoxLocation)p).getB());
                 pushBox.setO2(((BoxLocation)p).getO());
+                // here the move rules applies
+                String pushO1 = assignAdjacent(this.currentState.getRobotLocation().getO(), pushBox.getO2());
+                pushBox.setO1(pushO1);
                 return pushBox;
                 // push
             case "Clean": // clean that office
-                // cliean a certain office
+                // clean a certain office
+                // have to move to that office???
                 return  new CleanOffice(((Clean)p).getO());
                 // cleanoffice
             case "Adjacent":
@@ -85,8 +139,9 @@ public class Broker {
                 // noop
                 break;
         }
-
-
         return null;
     }
+
+
+
 }

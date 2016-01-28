@@ -44,7 +44,7 @@ public class Planner {
 
         // init static adjacent table...
 
-        Broker broker = new Broker(this.s.getConfig(), this.s.setupOfficeAdjacent()); //
+        Broker broker = new Broker(this.s.getConfig(), this.s.setupOfficeAdjacent(), this.estadoInicial); //
         List<O> planActual; // operadores
         planActual = new LinkedList<>(); // lista de operaciones para alcanzar al goalState
         Deque<E> pila; // admite operadores/predicados/listadepredicados[estado]
@@ -117,7 +117,12 @@ public class Planner {
 
                     if(((P) e).isParcialDefined()) {
                         System.out.println("Case 3");
-                        estadoActual.hasCond(e);
+                        // estadoActual.fillNull((P) e, broker);
+
+                        // descartar aquest estat
+
+
+
                     /*
                         3: E es una condicion parcialmente instanciada
                             Buscar en el estado actual una instancia que satisfaga la condicion
@@ -141,8 +146,12 @@ public class Planner {
                             O op = broker.getOperator((P)e);
 
                             PList pl = op.getPredList(); // list of preconditions of a certain operator
-                            //pila.add(op);
-                            //pila.add(pl);
+
+                            op.setPredList(pl);
+                            pl.setOp(op);
+
+                            pila.add(op);
+                            pila.add(pl);
 
                             // noop descartar el cond, siguiente: continue;
                         }
@@ -169,7 +178,7 @@ public class Planner {
                     break;
             }
 
-            break;
+            // break;
 
             /*
             RobotLocation(o1)

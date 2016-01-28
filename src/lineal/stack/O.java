@@ -4,6 +4,7 @@ package lineal.stack;
  */
 public abstract class O implements E {
 
+    protected PList pl;
     protected String type = "O";
     protected boolean defined = false;
     protected boolean precondition(){
@@ -32,7 +33,11 @@ public abstract class O implements E {
 
     public PList getPredList(){
         // return the addlist predcondition
-        return null;
+        return this.pl;
+    }
+
+    public void setPredList(PList pl){
+        this.pl = pl;
     }
 
     @Override

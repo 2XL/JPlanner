@@ -1,10 +1,49 @@
 
+
+
+
+
+/*
+
+1r Robot Location o1
+
+buscar un operador que lo tenga en su lista de aÃ±adir
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /*
     2-2
     Planificador lineal con pila de objetivos: [http://moodle.urv.cat/moodle/mod/forum/discuss.php?d=300031]
     Strips: Notation
     * precondiciones
-    * añadir
+    * aï¿½adir
     * borrar
     operadores parametrizados
     no existe tabla operadores/diferencias
@@ -57,7 +96,7 @@
     -- casos: 1, 2, 3, 4
     1: E es un operador
         EstadoActual := AplicarOperador(EstadoActual, E)
-        Añadir(PlanActual, E)
+        Aï¿½adir(PlanActual, E)
 
     2: E es una lista de condiciones
         Si no(CumpleCondiciones?(E, EstadoActual))
@@ -73,7 +112,7 @@
 
     4: E es una condicion totalmente instanciada
         Si no (CumpleCondicion?(E, EstadoActual)) Entonces
-        Buscar Operador O que permita obtener E en su lista de añadir
+        Buscar Operador O que permita obtener E en su lista de aï¿½adir
             Apilar(P, O)
             Apilar(P, precondicion(O)
             Para Toda Condicion C de Precondiciones(O)

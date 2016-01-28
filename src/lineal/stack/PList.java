@@ -8,7 +8,7 @@ import java.util.*;
 public class PList implements E {
     // continue una lista de condiciones
     List<P> list;
-
+    O op;
     public PList() {
         // empty constructor
         list = new LinkedList<>();
@@ -25,4 +25,9 @@ public class PList implements E {
     public List getList(){
         return this.list;
     }
+
+    public void setOp(O op){
+        this.op = op;
+    }
+
 }

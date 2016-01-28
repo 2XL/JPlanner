@@ -23,6 +23,8 @@ public class RobotLocation extends P {
         return this.o == null;
     }
 
+
+
     public RobotLocation(String o) {
         this.o = o;
 
