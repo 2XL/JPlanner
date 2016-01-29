@@ -108,7 +108,6 @@ public class Planner {
                      */
                     break;
                 case "3":
-                case "Adjacent":
                 case "BoxLocation":
                 case "Clean":
                 case "Dirty":
@@ -151,7 +150,7 @@ public class Planner {
                             pl.setOp(op);
 
                             pila.add(op);
-                            pila.add(pl);
+                            // pila.add(pl);
 
                             // noop descartar el cond, siguiente: continue;
                         }
@@ -172,6 +171,10 @@ public class Planner {
                 case "5":
                 case "State":
                     System.out.println("Solution found!");
+                    break;
+
+                case "Adjacent":
+                    // noop
                     break;
                 default:
                     System.out.println(str); // unhandled case

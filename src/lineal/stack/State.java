@@ -78,7 +78,7 @@ public class State implements E {
 
     }
 
-    public String getFreeAdjacent(List<String> adjacents){
+    public String getFreeAdjacent(TreeSet<String> adjacents){
         for(String key: adjacents) {
             if (this.boxLocations.containsKey(key)){
                 continue;

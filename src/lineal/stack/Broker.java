@@ -8,10 +8,7 @@ import lineal.stack.pre.Clean;
 import lineal.stack.pre.Empty;
 import lineal.stack.pre.RobotLocation;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by j on 26/01/2016.
@@ -22,8 +19,8 @@ public class Broker {
     List<String> boxes;
     List<String> offices;
     int dimension;
-    Map<String, List<String>> adjacent;
-    Map<String, List<String>> condOp; // operatdores que al aplicarse satisface una condicion
+    Map<String, TreeSet<String>> adjacent;
+    Map<String, TreeSet<String>> condOp; // operatdores que al aplicarse satisface una condicion
     State currentState;
     public Broker(HashMap<String, List> map, HashMap adjacent, State currState){
         // System.out.println(map);
@@ -45,35 +42,37 @@ public class Broker {
     }
 
     private String assignAdjacent(String src, String tgt){
-        String result;
-        if(this.dimension == 2){
-            // take one
-            result = this.adjacent.get(tgt).get(0);
-        }else{
+        String result = null;
+        if(this.dimension != 2){
+
             // take one that is adjacent to current or adjacent to target which is adjacent to current
             // if src is adjacent to tgt then pick src
             // otherwise choose one that is adjacent to source and target
             // this could be a regressive loop
-            List<String> adjacentsTgt = this.adjacent.get(tgt); // target adjacent
+            TreeSet<String> adjacentsTgt = this.adjacent.get(tgt); // target adjacent
             if(adjacentsTgt.contains(src))
                 return src;
 
 
-            List<String> adjacentsSrc = this.adjacent.get(src); // source adjacent
+            TreeSet<String> adjacentsSrc = this.adjacent.get(src); // source adjacent
 
-            List<String> mixing = new LinkedList<>(adjacentsSrc);
+            TreeSet<String> mixing = new TreeSet<>(adjacentsSrc);
 
             mixing.retainAll(adjacentsTgt);
             if(mixing.size() == 0){
-                return adjacentsTgt.get(0);
-            }else{
-                return mixing.get(0);
+                return adjacentsTgt.first();
+                // return adjacentsTgt.get(0);
             }
+
+            return mixing.first();
             // case 1 at one step
             // case 2 at adjacentsSrc and adjacentsTgt // have mixing
             // otherwise choose random tgt neighbor
         }
-        return result;
+        // take one
+        return this.adjacent.get(tgt).first();
+        // return null; // this will never happen!!!
+
     }
 
     public O getOperator(P p){
