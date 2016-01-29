@@ -6,6 +6,7 @@ import lineal.stack.PList;
 import lineal.stack.State;
 import lineal.stack.pre.Adjacent;
 import lineal.stack.pre.BoxLocation;
+import lineal.stack.pre.Empty;
 import lineal.stack.pre.RobotLocation;
 
 /**
@@ -64,14 +65,29 @@ public class Push extends O {
         return "Push(" + this.b + "," + this.o1 + "," + this.o2 + ")";
     }
     @Override
-    public void add(E e) {
-        String str = "BoxLocation(" + this.b + "," + this.o2 + "):RobotLocation(" + this.o2 + "):Empty(" + this.o1 + ")";
+    public void add(State e) {
+        // String str = "BoxLocation(" + this.b + "," + this.o2 + "):RobotLocation(" + this.o2 + "):Empty(" + this.o1 + ")";
+        BoxLocation bl = new BoxLocation(this.b, this.o2);
+        e.addPre(bl);
+        RobotLocation rl = new RobotLocation(this.o2);
+        e.addPre(rl);
+        Empty empty = new Empty(this.o1);
+        e.addPre(empty);
     }
     @Override
-    public void remove(E e) {
-        String str = "BoxLocation(" + this.b + "," + this.o1 + "):RobotLocation(" + this.o1 + "):Empty(" + this.o2 + ")";
+    public void remove(State e) {
+        // String str = "BoxLocation(" + this.b + "," + this.o1 + "):RobotLocation(" + this.o1 + "):Empty(" + this.o2 + ")";
+        BoxLocation bl = new BoxLocation(this.b, this.o1);
+        e.removePre(bl);
+        RobotLocation rl = new RobotLocation(this.o1);
+        e.removePre(rl);
+        Empty empty = new Empty(this.o2);
+        e.removePre(empty);
+
     }
     public void apply(State s){
+        System.out.println("Apply Push");
+
         this.add(s);
         this.remove(s);
     }

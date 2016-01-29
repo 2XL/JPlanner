@@ -45,24 +45,22 @@ public class Planner {
         // init static adjacent table...
 
         Broker broker = new Broker(this.s.getConfig(), this.s.setupOfficeAdjacent(), this.estadoInicial); //
-        List<O> planActual; // operadores
-        planActual = new LinkedList<>(); // lista de operaciones para alcanzar al goalState
-        Deque<E> pila; // admite operadores/predicados/listadepredicados[estado]
-        pila = new LinkedList<>(); // pila de transici�n
+        List<O> planActual = new LinkedList<>(); // operadores lista de operaciones para alcanzar al goalState
+        Deque<E> pilaObjetivos = new LinkedList<>(); // admite operadores/predicados/listadepredicados[estado]
         State estadoActual = this.estadoInicial;   // estado actual
 
-        pila.add(this.estadoFinal); // apilar estado final
+        pilaObjetivos.add(this.estadoFinal); // apilar estado final
         // para elementos de estado final
         for(P p : this.estadoFinal.getPre()){
-            pila.add(p); // apilar cada precondicion
+            pilaObjetivos.add(p); // apilar cada precondicion
         }
 
 
         // mientras la pila no este vacia... implica que no se cumplido todas las condiciones.
 
-        while(pila.size() != 0){
+        while(pilaObjetivos.size() != 0){
             System.out.println(estadoActual.getPre());
-            E e = pila.removeLast(); // E es igual la cima de p
+            E e = pilaObjetivos.removeLast(); // E es igual la cima de p
             // luego desapilar P...
 
             // before apply operation, sort the pred list
@@ -73,7 +71,7 @@ public class Planner {
             System.out.println(e);
             String str = e.getClass().getSimpleName();
             switch (str){
-                case "1":
+                case "1": // teneimos un operador
                 case "Push":
                 case "Move":
                 case "CleanOffice":
@@ -83,8 +81,8 @@ public class Planner {
                             EstadoActual := AplicarOperador(EstadoActual, E)
                             A�adir(PlanActual, E)
                      */
-                    estadoActual.applyOp((O) e);
-                    planActual.add((O) e);
+                    estadoActual.applyOp((O) e); //
+                    planActual.add((O) e); // añadirlo al final del plab actual
                     break;
                 case "2":
                 case "PList":
@@ -94,8 +92,8 @@ public class Planner {
                     if(listNoCumple.size() == 0){
                         // noop
                     }else {
-                        pila.add(e); // volver a analizarlo
-                        pila.addAll(listNoCumple); // analizar sus differencias
+                        pilaObjetivos.add(e); // volver a analizarlo
+                        pilaObjetivos.addAll(listNoCumple); // analizar sus differencias
                     }
                     /*
                         2: E es una lista de condiciones -- precondiciones de un operador
@@ -149,7 +147,7 @@ public class Planner {
                             op.setPredList(pl);
                             pl.setOp(op);
 
-                            pila.add(op);
+                            pilaObjetivos.add(op);
                             // pila.add(pl);
 
                             // noop descartar el cond, siguiente: continue;

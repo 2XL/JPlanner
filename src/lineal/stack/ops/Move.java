@@ -65,18 +65,20 @@ public class Move extends O {
         return true;
     }
     @Override
-    public void add(E e){
+    public void add(State e){
         RobotLocation rl = new RobotLocation(this.o2);
         // String str =  "RobotLocation("+this.o2+")";
-
+        e.addPre(rl);
     }
     @Override
-    public void remove(E e){
+    public void remove(State e){
         RobotLocation rl = new RobotLocation(this.o1);
         // String str = "RobotLocation("+this.o1+")";
+        e.removePre(rl);
     }
 
     public void apply(State s){
+        System.out.println("Apply Move");
         this.add(s);
         this.remove(s);
     }

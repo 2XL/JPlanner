@@ -19,14 +19,15 @@ public abstract class O implements E {
 
 
     protected void apply(State s){
+        //
+        
+    }
+
+    protected void add(State e){
 
     }
 
-    protected void add(E e){
-
-    }
-
-    protected void remove(E e){
+    protected void remove(State e){
 
     }
 

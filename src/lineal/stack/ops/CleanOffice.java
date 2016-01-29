@@ -1,6 +1,7 @@
 package lineal.stack.ops;
 
 import lineal.stack.*;
+import lineal.stack.pre.Clean;
 import lineal.stack.pre.Dirty;
 import lineal.stack.pre.Empty;
 import lineal.stack.pre.RobotLocation;
@@ -54,13 +55,17 @@ public class CleanOffice extends O {
     }
 
     @Override
-    public void add(E e){
-        String str =  "Clean("+this.o+")";
+    public void add(State e){
+        // String str =  "Clean("+this.o+")";
+        Clean clean = new Clean(this.o);
+        e.addPre(clean);
     }
 
     @Override
-    public void remove(E e){
-        String str = "Dirty("+this.o+")";
+    public void remove(State e){
+        // String str = "Dirty("+this.o+")";
+        Dirty dirty = new Dirty(this.o);
+        e.removePre(dirty);
     }
 
     @Override
@@ -77,6 +82,7 @@ public class CleanOffice extends O {
 
 
     public void apply(State s){
+        System.out.println("Apply Clean Office");
         this.add(s);
         this.remove(s);
     }

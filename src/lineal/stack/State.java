@@ -10,6 +10,9 @@ import java.util.*;
 public class State implements E {
     // State is a list of predicates
     List<P> pre;
+    // could be hash map
+
+
     RobotLocation robotLocation;
     Map<String, BoxLocation> boxLocations;
     public State() {
@@ -25,6 +28,19 @@ public class State implements E {
     public State(List<P> list) {
         this.pre = list;
 
+    }
+
+    public boolean removePre(P p){
+        // recorrer la llista... per comprovar si son iguals
+        if(this.pre.remove(p)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public void addPre(P p){
+        this.pre.add(p);
     }
 
 
@@ -104,6 +120,8 @@ public class State implements E {
     }
 
 
+
+
     public void fillNull(P p, Broker b){
 
         switch (p.type){
@@ -150,7 +168,6 @@ public class State implements E {
     }
 
     public boolean hasCond(E cond){
-
         // buscar en el estado actual una instancia que satisfaga la condicion cond
         boolean hasCond = false;
         for(Object p : this.pre)
