@@ -161,6 +161,8 @@ public class State implements E {
             if(this.pre.contains(p)){
                 continue;
             }else{
+                if(((P) p).type == "Adjacent")
+                    continue;
                  temp.add((P) p);
             }
         }
@@ -174,7 +176,7 @@ public class State implements E {
         {
             // return the p that are not satisfied
             // if(this.pre.contains(cond)){
-            System.out.println("Has condition? "+p+" as "+cond +" ?");
+            // System.out.println("Has condition? "+p+" as "+cond +" ?");
             if(p.equals(cond)){
                 hasCond = true;
                 // transmitir a la pila????? WTF

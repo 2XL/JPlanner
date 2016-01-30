@@ -2,9 +2,7 @@ package lineal;
 
 import lineal.stack.*;
 
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Planificador lineal con pila de objetivos
@@ -17,6 +15,7 @@ public class Planner {
     Estructura de datos
      */
     // State estadoActual;
+    Map<String, State> historial = new HashMap<>();
     State estadoInicial;
     State estadoFinal;
     // List<O> planActual;
@@ -59,7 +58,9 @@ public class Planner {
         // mientras la pila no este vacia... implica que no se cumplido todas las condiciones.
 
         while(pilaObjetivos.size() != 0){
+            System.out.println("EstadoActual --> Estado Final");
             System.out.println(estadoActual.getPre());
+            System.out.println(this.estadoFinal.getPre());
             E e = pilaObjetivos.removeLast(); // E es igual la cima de p
             // luego desapilar P...
 
@@ -135,10 +136,10 @@ public class Planner {
                         if(estadoActual.hasCond(e)){
                             // operador O que permita obtener P en su lista de añadir
                             // se añade operador con su lista de pre-condiciones.
-                            System.out.print("found!");
+                            System.out.println("found!");
 
                         }else{
-                            System.out.print("Not found...");
+                            System.out.println("Not found...");
                             // ask Broker for operator and append Plist
                             O op = broker.getOperator((P)e);
 
@@ -148,7 +149,7 @@ public class Planner {
                             pl.setOp(op);
 
                             pilaObjetivos.add(op);
-                            // pila.add(pl);
+                            pilaObjetivos.add(pl);
 
                             // noop descartar el cond, siguiente: continue;
                         }
