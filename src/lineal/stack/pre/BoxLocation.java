@@ -14,7 +14,7 @@ public class BoxLocation extends P {
     String b;
 
     public BoxLocation() {
-        this.priority = 2;
+        this.priority = 3;
         // empty constructor to leave the variables undefined
 
         this.type = "BoxLocation";
@@ -26,7 +26,7 @@ public class BoxLocation extends P {
 
         this.type = "BoxLocation";
 
-        this.priority = 2;
+        this.priority = 3;
         this.o = o;
         this.b = b;
     }
@@ -70,4 +70,12 @@ public class BoxLocation extends P {
             this.b = methodArgs[0];
         }
     }
+
+    @Override
+    public String getOffice(){
+    	// to override
+    	return this.getB()+this.getO();
+    }
+    
+    
 }

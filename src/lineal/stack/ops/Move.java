@@ -67,6 +67,7 @@ public class Move extends O {
     @Override
     public void add(State e){
         RobotLocation rl = new RobotLocation(this.o2);
+        e.setRobotLocation(rl);
         // String str =  "RobotLocation("+this.o2+")";
         e.addPre(rl);
     }
@@ -79,6 +80,7 @@ public class Move extends O {
 
     public void apply(State s){
         System.out.println("Apply Move");
+
         this.add(s);
         this.remove(s);
     }

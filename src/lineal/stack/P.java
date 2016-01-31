@@ -20,4 +20,10 @@ public abstract class P implements E{
     public boolean equals(Object obj) {
         return this.toString().equals(obj.toString());
     }
+    
+    public String getOffice(){
+    	// to override
+    	return null;
+    }
+    
 }

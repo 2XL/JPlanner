@@ -43,14 +43,19 @@ public class Planner {
 
         // init static adjacent table...
 
-        Broker broker = new Broker(this.s.getConfig(), this.s.setupOfficeAdjacent(), this.estadoInicial); //
+        Broker broker = new Broker(this.s.getConfig(), this.s.setupOfficeAdjacent(), this.estadoInicial, this.estadoFinal); //
         List<O> planActual = new LinkedList<>(); // operadores lista de operaciones para alcanzar al goalState
         Deque<E> pilaObjetivos = new LinkedList<>(); // admite operadores/predicados/listadepredicados[estado]
         State estadoActual = this.estadoInicial;   // estado actual
 
+        
+        
+        
+        
         pilaObjetivos.add(this.estadoFinal); // apilar estado final
         // para elementos de estado final
         for(P p : this.estadoFinal.getPre()){
+        	
             pilaObjetivos.add(p); // apilar cada precondicion
         }
 
@@ -73,7 +78,7 @@ public class Planner {
             String str = e.getClass().getSimpleName();
             switch (str){
                 case "1": // teneimos un operador
-                case "Push":
+                case "Push": 
                 case "Move":
                 case "CleanOffice":
                     System.out.println("Case 1");
@@ -83,6 +88,7 @@ public class Planner {
                             A�adir(PlanActual, E)
                      */
                     estadoActual.applyOp((O) e); //
+                    
                     planActual.add((O) e); // añadirlo al final del plab actual
                     break;
                 case "2":
@@ -169,7 +175,15 @@ public class Planner {
                     break;
                 case "5":
                 case "State":
-                    System.out.println("Solution found!");
+                	if ((estadoActual.getPre()).containsAll(estadoFinal.getPre())){
+                            System.out.println("Solution found!");
+                            int idx =0;
+                            for(O op: planActual){
+                            	System.out.println(idx++ +" --> "+op);
+                            }
+                	}else{
+                		System.out.println("WARNING");
+                	}
                     break;
 
                 case "Adjacent":
@@ -214,7 +228,7 @@ public class Planner {
 
 
     public static void main(String[] args){
-        Planner lpsg = new Planner(0); // Linear Planer with Stack of Goals
+        Planner lpsg = new Planner(4); // Linear Planer with Stack of Goals
         lpsg.resolve();
     }
 }

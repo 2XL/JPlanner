@@ -55,4 +55,11 @@ public class RobotLocation extends P {
             this.o = methodArgs[0];
         }
     }
+    
+    @Override
+    public String getOffice(){
+    	// to override
+    	return this.getO();
+    }
+    
 }

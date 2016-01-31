@@ -15,7 +15,7 @@ public class Dirty extends P {
     public Dirty(){
 
         this.type = "Dirty";
-        this.priority = 0; // noop
+        this.priority = 4; // noop
         this.o = null;
     }
 
@@ -27,7 +27,7 @@ public class Dirty extends P {
     public Dirty(String o){
         this.type = "Dirty";
 
-        this.priority = 0; // noop
+        this.priority = 4; // noop
         this.o = o;
     }
 
@@ -55,4 +55,11 @@ public class Dirty extends P {
             this.o = methodArgs[0];
         }
     }
+    
+    @Override
+    public String getOffice(){
+    	// to override
+    	return this.getO();
+    }
+    
 }

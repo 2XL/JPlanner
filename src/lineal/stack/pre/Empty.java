@@ -13,7 +13,7 @@ public class Empty extends P {
     String o;
 
     public Empty(){
-        this.priority = 0;
+        this.priority = 2;
         this.type="Empty";
         this.o = null;
     }
@@ -26,7 +26,7 @@ public class Empty extends P {
     public Empty(String o){
         this.type="Empty";
 
-        this.priority = 0;
+        this.priority = 2;
         this.o = o;
     }
 
@@ -54,4 +54,12 @@ public class Empty extends P {
             this.o = methodArgs[0];
         }
     }
+    
+    @Override
+    public String getOffice(){
+    	// to override
+    	return this.getO();
+    }
+    
+    
 }

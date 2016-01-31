@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="Python 2.7.10 (C:\Python27\python.exe) interpreter library">
+    <archive path="C:/Python27/DLLs" />
+    <archive path="C:/Python27/Lib" />
+    <archive path="C:/Python27/Lib/lib-tk" />
+    <archive path="C:/Python27" />
+    <archive path="C:/Python27/Lib/site-packages" />
+    <archive path="C:/Users/j/.IntelliJIdea15/config/plugins/python/helpers/python-skeletons" />
+    <archive path="C:/Users/j/.IntelliJIdea14/system/python_stubs/-762174762" />
+  </library>
+  <library name="Python 2.7.10 virtualenv at C:\Users\j\Tecnilab\nexioenv interpreter library">
+    <archive path="C:/Python27/Lib" />
+    <archive path="C:/Python27/DLLs" />
+    <archive path="C:/Python27/Lib/lib-tk" />
+    <archive path="C:/Users/j/.IntelliJIdea15/config/plugins/python/helpers/python-skeletons" />
+    <archive path="C:/Users/j/.IntelliJIdea14/system/python_stubs/-865146843" />
+  </library>
+  <library name="Python 2.7.10 virtualenv at C:\Users\j\virtualenv interpreter library">
+    <archive path="C:/Users/j/virtualenv/Lib" />
+    <archive path="C:/Users/j/virtualenv/Scripts" />
+    <archive path="C:/Python27/Lib" />
+    <archive path="C:/Python27/DLLs" />
+    <archive path="C:/Python27/Lib/lib-tk" />
+    <archive path="C:/Users/j/virtualenv" />
+    <archive path="C:/Users/j/virtualenv/Lib/site-packages" />
+    <archive path="C:/Users/j/.IntelliJIdea15/config/plugins/python/helpers/python-skeletons" />
+    <archive path="C:/Users/j/.IntelliJIdea14/system/python_stubs/-1498550288" />
+  </library>
+</eclipse-userlibraries>
+

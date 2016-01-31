@@ -107,7 +107,7 @@ public class Setup {
         for (int row = 0; row < dim; row++)
             for (int column = 0; column < dim; column++) {
                 String office = building[row][column];
-                adjacent.put(office, new TreeSet<>());
+                adjacent.put(office, new TreeSet<String>());
                 try {
                     if (building[row + 1][column] != null) {
                         // office.putAdjacent(building[row + 1][column]);

@@ -21,10 +21,11 @@ public class Broker {
     int dimension;
     Map<String, TreeSet<String>> adjacent;
     Map<String, TreeSet<String>> condOp; // operatdores que al aplicarse satisface una condicion
-    State currentState;
-    public Broker(HashMap<String, List> map, HashMap adjacent, State currState){
+    State currentState, finalState;
+    public Broker(HashMap<String, List> map, HashMap adjacent, State currState, State finalState){
         // System.out.println(map);
         this.currentState = currState;
+        this.finalState = finalState;
         this.adjacent = adjacent;
         this.boxes = map.get("Boxes");
         this.offices = map.get("Offices");
@@ -60,7 +61,10 @@ public class Broker {
 
             mixing.retainAll(adjacentsTgt);
             if(mixing.size() == 0){
-                return adjacentsTgt.first();
+            	int size=  adjacentsTgt.size();
+                int choice = (int)Math.floor(size * Math.random());
+            	
+                return choice == 0 ? adjacentsTgt.first() : adjacentsTgt.last();
                 // return adjacentsTgt.get(0);
             }
 
@@ -68,6 +72,11 @@ public class Broker {
             // case 1 at one step
             // case 2 at adjacentsSrc and adjacentsTgt // have mixing
             // otherwise choose random tgt neighbor
+        }
+        else{
+        	TreeSet<String> adjacentsTgt = this.adjacent.get(tgt); // target adjacent
+            if(adjacentsTgt.contains(src))
+                return src;
         }
         // take one
         return this.adjacent.get(tgt).first();
@@ -86,6 +95,31 @@ public class Broker {
 
         switch (p.type){
             case "RobotLocation":
+            	
+            	// si caja en la posicion actual y no es su posicion final movemos caja
+            	/*
+            	BoxLocation isBox = this.currentState.boxLocations.get(this.currentState.robotLocation.getO()); 
+            	if(isBox != null){
+            		BoxLocation fBox = this.finalState.boxLocations.get(isBox.getB());
+            		if (!fBox.getO().equals(isBox.getO())) {
+            			Push pushBox = new Push();
+            			pushBox.setO1(((Empty)p).getO());
+                        // know what box is on the pushEmpty
+                        String box = this.currentState.getBoxLocation(pushBox.getO1());
+                        pushBox.setB(box);
+                        String o2 = this.currentState.getFreeAdjacent(this.adjacent.get(pushBox.getO1()));
+                        if(o2 == null){
+                            System.out.println("Block got Stucked");
+                            // move this operator to the tail?
+                            // or just noop and force the need to move a neighbor block
+                        }else{
+                        	pushBox.setO2(o2);
+                        }
+                        return pushBox;
+            		}
+            		            		
+            	}
+            	*/
                 Move move = new Move(); // our robot to the location
                 move.setO2(((RobotLocation)p).getO());
                 // Move(null,Y)
@@ -98,6 +132,9 @@ public class Broker {
                 return move;
                 // move
                 // break;
+            	
+            	
+                
             case "Empty":
                 // push // this should not be done? as this goal will be achived when box location is correct
                 // push whatever box
@@ -109,12 +146,14 @@ public class Broker {
                 pushEmpty.setB(box);
                 String o2 = this.currentState.getFreeAdjacent(this.adjacent.get(pushEmpty.getO1()));
                 if(o2 == null){
+                	//si todas ocupadas añadir un move
                     System.out.println("Block got Stucked");
                     // move this operator to the tail?
                     // or just noop and force the need to move a neighbor block
                 }else{
                     pushEmpty.setO2(o2);
                 }
+                
                 return pushEmpty;
                 // break;
             case "BoxLocation": // push a certain box to that office
@@ -123,7 +162,7 @@ public class Broker {
                 pushBox.setB(((BoxLocation)p).getB());
                 pushBox.setO2(((BoxLocation)p).getO());
                 // here the move rules applies
-                String pushO1 = assignAdjacent(this.currentState.getRobotLocation().getO(), pushBox.getO2());
+                String pushO1 = assignAdjacent(this.currentState.getBoxLocationByBox(pushBox.getB()), pushBox.getO2());
                 pushBox.setO1(pushO1);
                 return pushBox;
                 // push
@@ -140,7 +179,6 @@ public class Broker {
         }
         return null;
     }
-
 
 
 }

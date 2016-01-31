@@ -68,8 +68,10 @@ public class Push extends O {
     public void add(State e) {
         // String str = "BoxLocation(" + this.b + "," + this.o2 + "):RobotLocation(" + this.o2 + "):Empty(" + this.o1 + ")";
         BoxLocation bl = new BoxLocation(this.b, this.o2);
+        e.setBoxLocation(bl);
         e.addPre(bl);
         RobotLocation rl = new RobotLocation(this.o2);
+        e.setRobotLocation(rl);
         e.addPre(rl);
         Empty empty = new Empty(this.o1);
         e.addPre(empty);
@@ -87,6 +89,7 @@ public class Push extends O {
     }
     public void apply(State s){
         System.out.println("Apply Push");
+      
 
         this.add(s);
         this.remove(s);
@@ -100,6 +103,7 @@ public class Push extends O {
         pl.addCond(new RobotLocation(this.o1));
         pl.addCond(new BoxLocation(this.b, this.o1));
         pl.addCond(new Adjacent(this.o1, this.o2));
+        pl.addCond(new Empty(this.o2));
         return pl;
     }
 

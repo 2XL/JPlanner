@@ -14,16 +14,17 @@ public class Adjacent extends P {
     int index = 0;
     String o1;
     String o2;
+    
     // this class is static
     public Adjacent() {
         // empty constructor to leave the variables undefined
-
+    	this.type = "Adjacent";
         this.o1 = null;
-
         this.o2 = null;
     }
 
     public Adjacent(String o1, String o2) {
+    	this.type = "Adjacent";
         this.o1 = o1;
         this.o2 = o2;
     }
@@ -57,4 +58,12 @@ public class Adjacent extends P {
         // return super.toString();
         return "Adjacent(" + this.o1 + "," + this.o2 + ")";
     }
+    
+
+    @Override
+    public String getOffice(){
+    	// to override
+    	return this.getO1();
+    }
+    
 }

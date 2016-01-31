@@ -9,14 +9,14 @@ import java.util.*;
  */
 public class State implements E {
     // State is a list of predicates
-    List<P> pre;
+    PList pre;
     // could be hash map
 
 
     RobotLocation robotLocation;
     Map<String, BoxLocation> boxLocations;
     public State() {
-        this.pre = new LinkedList<>();
+        this.pre = new PList();
         boxLocations = new HashMap<>();
         // somehow this has to be sorted... or maybe not.
     }
@@ -25,14 +25,18 @@ public class State implements E {
         return robotLocation;
     }
 
+    public void setRobotLocation(RobotLocation rl){
+        this.robotLocation = rl;
+    }
+    
     public State(List<P> list) {
-        this.pre = list;
+        this.pre.setList(list);
 
     }
 
     public boolean removePre(P p){
         // recorrer la llista... per comprovar si son iguals
-        if(this.pre.remove(p)){
+        if(this.pre.rmCond(p)){
             return true;
         }else{
             return false;
@@ -40,7 +44,7 @@ public class State implements E {
     }
 
     public void addPre(P p){
-        this.pre.add(p);
+        this.pre.addCond(p);
     }
 
 
@@ -60,17 +64,17 @@ public class State implements E {
             case "Dirty":
                 Dirty predD = new Dirty();
                 predD.setAttr(p);
-                pre.add(predD);
+                pre.addCond(predD);
                 break;
             case "Empty":
                 Empty predE = new Empty();
                 predE.setAttr(p);
-                pre.add(predE);
+                pre.addCond(predE);
                 break;
             case "Clean":
                 Clean predC = new Clean();
                 predC.setAttr(p);
-                pre.add(predC);
+                pre.addCond(predC);
                 break;
             case "Box-location":
                 BoxLocation predBL = new BoxLocation();
@@ -78,13 +82,13 @@ public class State implements E {
                 // allow lookup by box or office
                 this.boxLocations.put(predBL.getO(), predBL);
                 this.boxLocations.put(predBL.getB(), predBL);
-                pre.add(predBL);
+                pre.addCond(predBL);
                 break;
             case "Robot-location":
                 RobotLocation predRL = new RobotLocation();
                 predRL.setAttr(p);
                 this.robotLocation = predRL;
-                pre.add(predRL);
+                pre.addCond(predRL);
                 break;
             default:
                 // unhandled error
@@ -114,9 +118,24 @@ public class State implements E {
     public String getBoxLocation(String office){
         return this.boxLocations.get(office).getB();
     }
-
+    
+    public String getBoxLocationByBox(String box){
+        return this.boxLocations.get(box).getO();
+    }
+    
+    
+    public void setBoxLocation(BoxLocation bl){
+    	BoxLocation box = this.boxLocations.get(bl.getB());
+        this.boxLocations.remove(box.getB());
+        this.boxLocations.remove(box.getO());
+        
+        this.boxLocations.put(bl.getB(), bl);
+        this.boxLocations.put(bl.getO(), bl);
+        
+    }
+    
     public List<P> getPre() {
-        return pre;
+        return pre.getList();
     }
 
 
@@ -146,7 +165,7 @@ public class State implements E {
     }
 
     public boolean hasPre(P p){
-        return this.pre.contains(p); // if it contains a certain string.
+        return this.pre.containsCond(p); // if it contains a certain string.
     }
 
     /**
@@ -158,10 +177,10 @@ public class State implements E {
         for(Object p : pl.getList())
         {
             // return the p that are not satisfied
-            if(this.pre.contains(p)){
+            if(this.pre.containsCond((P)p)){
                 continue;
             }else{
-                if(((P) p).type == "Adjacent")
+                if(((P) p).type.equals("Adjacent"))
                     continue;
                  temp.add((P) p);
             }
@@ -172,7 +191,7 @@ public class State implements E {
     public boolean hasCond(E cond){
         // buscar en el estado actual una instancia que satisfaga la condicion cond
         boolean hasCond = false;
-        for(Object p : this.pre)
+        for(Object p : this.pre.getList())
         {
             // return the p that are not satisfied
             // if(this.pre.contains(cond)){
